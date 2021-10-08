@@ -1,17 +1,33 @@
-plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-}
+import static org.gradle.api.JavaVersion.VERSION_1_8
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+def dataProperties = new Properties()
+dataProperties.load(new FileInputStream(rootProject.file("../rappi-keys/data.properties")))
+
+def signinProperties = new Properties()
+signinProperties.load(new FileInputStream(rootProject.file("../rappi-keys/signin.properties")))
 
 android {
-    compileSdk 30
+    signingConfigs {
+        release {
+            keyAlias "${signinProperties['KeyAlias']}"
+            keyPassword "${signinProperties['KeyPassword']}"
+            storeFile file("${signinProperties['StoreFile']}")
+            storePassword "${signinProperties['StorePassword']}"
+        }
+    }
 
+    compileSdk 31
     defaultConfig {
         applicationId "com.rappi.android"
         minSdk 23
-        targetSdk 30
-        versionCode 1
-        versionName "1.0"
+        targetSdk 31
+        versionCode rootProject.versionCode
+        versionName rootProject.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -20,26 +36,70 @@ android {
     }
 
     buildTypes {
+        debug {
+            debuggable true
+        }
         release {
-            minifyEnabled false
+            debuggable false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility VERSION_1_8
+        targetCompatibility VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = '1.8'
         useIR = true
     }
+
     buildFeatures {
         compose true
     }
+
+    flavorDimensions "services"
+    productFlavors {
+        prod {
+            dimension "services"
+
+            resValue "string", "app_name", "Rappi"
+            resValue "string", "account_type", "com.rappi.android"
+
+            buildConfigField("String", "DomainApi", "\"${dataProperties['DomainApi']}\"")
+            buildConfigField("String", "ApiKey", "\"${dataProperties['ApiKey']}\"")
+        }
+        qa {
+            dimension "services"
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+
+            resValue "string", "app_name", "Rappi Debug"
+            resValue "string", "account_type", "com.rappi.android.debug"
+
+            buildConfigField("String", "DomainApi", "\"${dataProperties['DevDomainApi']}\"")
+            buildConfigField("String", "ApiKey", "\"${dataProperties['ApiKey']}\"")
+        }
+        staging {
+            dimension "services"
+            applicationIdSuffix ".staging"
+            versionNameSuffix "-staging"
+
+            resValue "string", "app_name", "Rappi Staging"
+            resValue "string", "account_type", "com.rappi.android.staging"
+
+            buildConfigField("String", "DomainApi", "\"${dataProperties['StagingDomainApi']}\"")
+            buildConfigField("String", "ApiKey", "\"${dataProperties['ApiKey']}\"")
+        }
+    }
+
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerExtensionVersion rootProject.ext.composeVersion
         kotlinCompilerVersion '1.5.21'
     }
+
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
@@ -48,18 +108,41 @@ android {
 }
 
 dependencies {
+    implementation rootProject.kotlin
 
-    implementation 'androidx.core:core-ktx:1.6.0'
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
-    implementation 'androidx.activity:activity-compose:1.3.0-alpha06'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
-    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    def testingDependencies = rootProject.ext.testingDependencies
+    testImplementation testingDependencies.junitTesting
+    androidTestImplementation testingDependencies.runner
+    androidTestImplementation testingDependencies.espresso
+    androidTestImplementation testingDependencies.composeUiTest
+    androidTestImplementation testingDependencies.composeUiTooling
+
+    def appDependencies = rootProject.ext.appDependencies
+    implementation appDependencies.core
+    implementation appDependencies.appcompat
+    implementation appDependencies.material
+    implementation appDependencies.accompanist
+    implementation appDependencies.glide
+    implementation appDependencies.glideOkHttp3
+    kapt appDependencies.glideCompile
+    implementation appDependencies.composeUi
+    implementation appDependencies.composeActivity
+    implementation appDependencies.composeUiTooling
+    implementation appDependencies.composeFoundation
+    implementation appDependencies.composeMaterial
+    implementation appDependencies.composeIconsCore
+    implementation appDependencies.composeIconsExtended
+    implementation appDependencies.composeLiveData
+    implementation appDependencies.composeRxJava
+    implementation appDependencies.composeRuntime
+    implementation appDependencies.composeNavigation
+
+    def dataDependencies = rootProject.ext.dataDependencies
+    implementation dataDependencies.retrofit
+    implementation dataDependencies.retrofitMoshi
+    implementation dataDependencies.retrofitGson
+    implementation dataDependencies.loggingInterceptor
+
+    //implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    //implementation 'androidx.activity:activity-compose:1.3.0-alpha06'
 }
