@@ -18,10 +18,35 @@ val dmSansFamily = FontFamily(
 
 // Set of Material typography styles to start with
 val Typography = Typography(
+    h1 = TextStyle(
+        fontFamily = dmSansFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 34.sp
+    ),
+    h2 = TextStyle(
+        fontFamily = dmSansFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 22.sp
+    ),
+    h3 = TextStyle(
+        fontFamily = dmSansFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 18.sp
+    ),
+    h4 = TextStyle(
+        fontFamily = dmSansFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 16.sp
+    ),
     body1 = TextStyle(
         fontFamily = dmSansFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
+    ),
+    body2 = TextStyle(
+        fontFamily = dmSansFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp
     )
     /* Other default text styles to override
     button = TextStyle(

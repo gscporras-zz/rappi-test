@@ -8,5 +8,11 @@ data class MovieItem(
     var poster_path: String? = null,
     var release_date: String? = null,
     var title: String? = null,
-    var vote_average: String? = null
+    var vote_average: Double? = null,
+    var genres: List<Genres?>? = null
+)
+
+data class Genres(
+    var id: Int? = null,
+    var name: String? = null
 )

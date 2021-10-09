@@ -6,8 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,14 +51,13 @@ class MainActivity : ComponentActivity() {
                             TopBar(currentScreen = currentScreen)
                         }
                              },
-                    content = {
-                        Navigation(navController)
-                    },
                     bottomBar = {
                         if(currentRoute == NavigationItem.Popular.route ||  currentRoute == NavigationItem.TopRated.route) {
                             BottomNavigationBar(navController = navController, currentRoute = currentRoute)
                         }
-                    })
+                    }) { innerPadding ->
+                    Navigation(navController, innerPadding)
+                }
             }
         }
     }
@@ -110,8 +112,8 @@ class MainActivity : ComponentActivity() {
 
     @ExperimentalFoundationApi
     @Composable
-    fun Navigation(navController: NavHostController) {
-        NavHost(navController, startDestination = NavigationItem.Popular.route) {
+    fun Navigation(navController: NavHostController, innerPadding: PaddingValues) {
+        NavHost(navController, startDestination = NavigationItem.Popular.route, modifier = Modifier.padding(innerPadding)) {
             composable(NavigationItem.Popular.route) {
                 Surface(color = MaterialTheme.colors.background) {
                     PopularList(context = this@MainActivity, mainViewModel = mainViewModel)

@@ -10,4 +10,8 @@
     <color name="black_30">#4D000000</color>
     <color name="black_3">#08000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="white_20">#33FFFFFF</color>
+    <color name="white_80">#CCFFFFFF</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="dark">#212121</color>
 </resources>

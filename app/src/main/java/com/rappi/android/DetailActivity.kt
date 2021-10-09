@@ -4,8 +4,16 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Scaffold
+import androidx.compose.material.ScrollableTabRow
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.rappi.android.ui.app.details.MovieDetails
+import com.rappi.android.ui.theme.RappiTestTheme
 import com.rappi.android.ui.viewmodel.MainViewModel
 
 class DetailActivity: AppCompatActivity() {
@@ -21,8 +29,10 @@ class DetailActivity: AppCompatActivity() {
         mainViewModel.fetchMovieDetail(intent?.extras?.getInt(ID))
         mainViewModel.fetchVideosDetail(intent?.extras?.getInt(ID))
         setContent {
-            Column() {
-                MovieDetails(mainViewModel.movie, mainViewModel.videos)
+            RappiTestTheme {
+                Scaffold(modifier = Modifier.background(Color.Blue)) {
+                    MovieDetails(mainViewModel.movie, mainViewModel.videos)
+                }
             }
         }
     }

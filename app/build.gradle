@@ -120,6 +120,7 @@ dependencies {
     implementation appDependencies.core
     implementation appDependencies.appcompat
     implementation appDependencies.material
+    implementation appDependencies.coil
     implementation appDependencies.accompanist
     implementation appDependencies.glide
     implementation appDependencies.glideOkHttp3
