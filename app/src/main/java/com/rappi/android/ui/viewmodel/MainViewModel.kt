@@ -7,6 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rappi.android.data.model.MovieItem
+import com.rappi.android.data.model.VideoItem
+import com.rappi.android.data.model.VideoResponse
 import com.rappi.android.data.network.MovieApiClient
 import com.rappi.android.data.repository.MovieRepository
 import com.rappi.android.utils.CustomResult
@@ -19,8 +21,7 @@ class MainViewModel : ViewModel() {
     var topRatedMovies: List<MovieItem> by mutableStateOf(listOf())
     var movie: MovieItem by mutableStateOf(MovieItem())
     var moviesSearched: List<MovieItem> by mutableStateOf(listOf())
-
-    lateinit var clickedItem: MovieItem
+    var videos: List<VideoItem> by mutableStateOf(listOf())
 
     init {
         fetchPopularMovies()
@@ -91,7 +92,19 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun itemClicked(item: MovieItem) {
-        clickedItem = item
+    fun fetchVideosDetail(movieId: Int?) {
+        repository = MovieRepository(apiService)
+        viewModelScope.launch {
+            when (val response = repository.fetchVideosDetail(movieId)) {
+                is CustomResult.OnSuccess -> {
+                    Log.d("MainViewModel", "Success")
+                    videos = response.data.results
+                }
+                is CustomResult.OnError -> {
+                    Log.d("MainViewModel", "FAILURE")
+                }
+                else -> {}
+            }
+        }
     }
 }

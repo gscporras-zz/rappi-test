@@ -23,7 +23,6 @@ import com.rappi.android.utils.NavigationItem
 @Composable
 fun ListViewItem(
     context: Context,
-    navController: NavController? = null,
     movieItem: MovieItem
 ) {
 

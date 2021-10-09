@@ -36,11 +36,7 @@ android {
     }
 
     buildTypes {
-        debug {
-            debuggable true
-        }
         release {
-            debuggable false
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -70,6 +66,7 @@ android {
 
             buildConfigField("String", "DomainApi", "\"${dataProperties['DomainApi']}\"")
             buildConfigField("String", "ApiKey", "\"${dataProperties['ApiKey']}\"")
+            buildConfigField("String", "GoogleApiKey", "\"${dataProperties['GoogleApiKey']}\"")
         }
         qa {
             dimension "services"
@@ -81,6 +78,7 @@ android {
 
             buildConfigField("String", "DomainApi", "\"${dataProperties['DevDomainApi']}\"")
             buildConfigField("String", "ApiKey", "\"${dataProperties['ApiKey']}\"")
+            buildConfigField("String", "GoogleApiKey", "\"${dataProperties['GoogleApiKey']}\"")
         }
         staging {
             dimension "services"
@@ -92,6 +90,7 @@ android {
 
             buildConfigField("String", "DomainApi", "\"${dataProperties['StagingDomainApi']}\"")
             buildConfigField("String", "ApiKey", "\"${dataProperties['ApiKey']}\"")
+            buildConfigField("String", "GoogleApiKey", "\"${dataProperties['GoogleApiKey']}\"")
         }
     }
 
@@ -142,7 +141,4 @@ dependencies {
     implementation dataDependencies.retrofitMoshi
     implementation dataDependencies.retrofitGson
     implementation dataDependencies.loggingInterceptor
-
-    //implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
-    //implementation 'androidx.activity:activity-compose:1.3.0-alpha06'
 }

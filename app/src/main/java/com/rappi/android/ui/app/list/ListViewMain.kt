@@ -14,27 +14,24 @@ import com.rappi.android.ui.viewmodel.MainViewModel
 @Composable
 fun PopularList(
     context: Context,
-    navController: NavController,
     mainViewModel: MainViewModel
 ){
-    MovieList(context = context, navController = navController, movieList = mainViewModel.popularMovies)
+    MovieList(context = context, movieList = mainViewModel.popularMovies)
 }
 
 @ExperimentalFoundationApi
 @Composable
 fun TopRatedList(
     context: Context,
-    navController: NavController,
     mainViewModel: MainViewModel
 ){
-    MovieList(context = context, navController = navController,movieList = mainViewModel.topRatedMovies)
+    MovieList(context = context, movieList = mainViewModel.topRatedMovies)
 }
 
 @ExperimentalFoundationApi
 @Composable
 fun MovieList(
     context: Context,
-    navController: NavController? = null,
     movieList: List<MovieItem>
 ){
     val listState = rememberLazyListState()
@@ -44,7 +41,7 @@ fun MovieList(
             MainHeader()
         }*/
         itemsIndexed(movieList) { index, item ->
-            ListViewItem(context = context, navController = navController, movieItem = item)
+            ListViewItem(context = context, movieItem = item)
         }
     }
 }

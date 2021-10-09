@@ -4,8 +4,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.Text
-import com.rappi.android.data.model.MovieItem
+import androidx.compose.foundation.layout.Column
 import com.rappi.android.ui.app.details.MovieDetails
 import com.rappi.android.ui.viewmodel.MainViewModel
 
@@ -19,9 +18,12 @@ class DetailActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mainViewModel.fetchMovieDetail(intent?.extras?.getInt(ID))
+        mainViewModel.fetchVideosDetail(intent?.extras?.getInt(ID))
         setContent {
-            mainViewModel.fetchMovieDetail(intent?.extras?.getInt(ID))
-            MovieDetails(mainViewModel.movie)
+            Column() {
+                MovieDetails(mainViewModel.movie, mainViewModel.videos)
+            }
         }
     }
 }

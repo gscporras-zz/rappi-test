@@ -11,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -19,7 +18,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.rappi.android.ui.app.details.MovieDetails
 import com.rappi.android.ui.app.list.PopularList
 import com.rappi.android.ui.app.list.TopRatedList
 import com.rappi.android.ui.theme.RappiTestTheme
@@ -116,12 +114,12 @@ class MainActivity : ComponentActivity() {
         NavHost(navController, startDestination = NavigationItem.Popular.route) {
             composable(NavigationItem.Popular.route) {
                 Surface(color = MaterialTheme.colors.background) {
-                    PopularList(context = this@MainActivity, navController = navController, mainViewModel = mainViewModel)
+                    PopularList(context = this@MainActivity, mainViewModel = mainViewModel)
                 }
             }
             composable(NavigationItem.TopRated.route) {
                 Surface(color = MaterialTheme.colors.background) {
-                    TopRatedList(context = this@MainActivity, navController = navController, mainViewModel = mainViewModel)
+                    TopRatedList(context = this@MainActivity, mainViewModel = mainViewModel)
                 }
             }
         }
