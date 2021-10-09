@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.rappi.android.data.model.MovieItem
 import com.rappi.android.data.network.MovieApiClient
 import com.rappi.android.data.repository.MovieRepository
+import com.rappi.android.utils.CustomResult
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
@@ -16,6 +17,8 @@ class MainViewModel : ViewModel() {
     private lateinit var repository: MovieRepository
     var popularMovies: List<MovieItem> by mutableStateOf(listOf())
     var topRatedMovies: List<MovieItem> by mutableStateOf(listOf())
+    var movie: MovieItem by mutableStateOf(MovieItem())
+    var moviesSearched: List<MovieItem> by mutableStateOf(listOf())
 
     lateinit var clickedItem: MovieItem
 
@@ -24,15 +27,15 @@ class MainViewModel : ViewModel() {
         fetchTopRatedMovies()
     }
 
-    private fun fetchPopularMovies() {
+    fun fetchPopularMovies() {
         repository = MovieRepository(apiService)
         viewModelScope.launch {
             when (val response = repository.fetchPopularMovies()) {
-                is MovieRepository.Result.Success -> {
+                is CustomResult.OnSuccess -> {
                     Log.d("MainViewModel", "Success")
-                    popularMovies = response.movieList
+                    popularMovies = response.data.results
                 }
-                is MovieRepository.Result.Failure -> {
+                is CustomResult.OnError -> {
                     Log.d("MainViewModel", "FAILURE")
                 }
                 else -> {}
@@ -40,15 +43,47 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    private fun fetchTopRatedMovies() {
+    fun fetchTopRatedMovies() {
         repository = MovieRepository(apiService)
         viewModelScope.launch {
             when (val response = repository.fetchTopRatedMovies()) {
-                is MovieRepository.Result.Success -> {
+                is CustomResult.OnSuccess -> {
                     Log.d("MainViewModel", "Success")
-                    topRatedMovies = response.movieList
+                    topRatedMovies = response.data.results
                 }
-                is MovieRepository.Result.Failure -> {
+                is CustomResult.OnError -> {
+                    Log.d("MainViewModel", "FAILURE")
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun fetchMovieDetail(movieId: Int?) {
+        repository = MovieRepository(apiService)
+        viewModelScope.launch {
+            when (val response = repository.fetchMovieDetail(movieId)) {
+                is CustomResult.OnSuccess -> {
+                    Log.d("MainViewModel", "Success")
+                    movie = response.data
+                }
+                is CustomResult.OnError -> {
+                    Log.d("MainViewModel", "FAILURE")
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun fetchSearchMovies(query: String?) {
+        repository = MovieRepository(apiService)
+        viewModelScope.launch {
+            when (val response = repository.fetchSearchMovies(query)) {
+                is CustomResult.OnSuccess -> {
+                    Log.d("MainViewModel", "Success")
+                    moviesSearched = response.data.results
+                }
+                is CustomResult.OnError -> {
                     Log.d("MainViewModel", "FAILURE")
                 }
                 else -> {}

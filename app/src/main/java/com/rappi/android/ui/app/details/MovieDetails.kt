@@ -3,20 +3,19 @@ package com.rappi.android.ui.app.details
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.coil.rememberCoilPainter
 import com.rappi.android.data.model.MovieItem
-import com.rappi.android.utils.Constants
+import com.rappi.android.ui.theme.dmSansFamily
+import com.rappi.android.utils.BASE_IMAGE_URL
 
 @Composable
-fun MovieDetails(movieItem: MovieItem, id: String){
+fun MovieDetails(movieItem: MovieItem) {
     Column() {
         MovieDetailsBanner(movieItem = movieItem)
         MovieDetailsText(movieItem = movieItem)
@@ -27,23 +26,32 @@ fun MovieDetails(movieItem: MovieItem, id: String){
 fun MovieDetailsBanner(movieItem: MovieItem){
     Row(modifier = Modifier
         .fillMaxWidth()
-        .height(300.dp)) {
-        Image(modifier = Modifier
+        .wrapContentHeight()) {
+        Image(
+            modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(),painter = rememberCoilPainter(request = Constants.BASE_IMAGE_URL+movieItem.backdrop_path) , contentDescription = "")
+            .wrapContentHeight(),
+            painter = rememberCoilPainter(request = BASE_IMAGE_URL+movieItem.backdrop_path),
+            contentDescription = ""
+        )
     }
 }
 @Composable
 fun MovieDetailsText(movieItem: MovieItem){
     Column(modifier = Modifier.padding(10.dp)) {
         movieItem.title?.let {
-            Text(text = it, fontFamily = FontFamily.Serif,
-                fontWeight = FontWeight.Normal,
+            Text(
+                text = it,
+                fontFamily = dmSansFamily,
+                fontWeight = FontWeight.Medium,
                 fontSize = 24.sp)
         }
-        Text(text = movieItem.overview,Modifier.padding(top=10.dp),fontFamily = FontFamily.Serif,
+        Text(
+            text = movieItem.overview ?: "",
+            modifier = Modifier.padding(top=10.dp),
+            fontFamily = dmSansFamily,
             fontWeight = FontWeight.Normal,
-            fontSize = 16.sp)
+            fontSize = 16.sp
+        )
     }
-
 }

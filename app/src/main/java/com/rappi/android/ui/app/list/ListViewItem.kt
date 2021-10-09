@@ -1,7 +1,8 @@
 package com.rappi.android.ui.app.list
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,25 +12,27 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.accompanist.coil.rememberCoilPainter
+import com.rappi.android.DetailActivity
 import com.rappi.android.data.model.MovieItem
-import com.rappi.android.utils.Constants
+import com.rappi.android.utils.BASE_IMAGE_URL
+import com.rappi.android.utils.NavigationItem
 
 @Composable
 fun ListViewItem(
-    navController: NavController,
-    movieItem: MovieItem,
-    onItemClicked: (item: MovieItem) -> Unit
+    context: Context,
+    navController: NavController? = null,
+    movieItem: MovieItem
 ) {
+
     ListViewItem(movieItem = movieItem, modifier = Modifier
         .padding(8.dp)
         .clickable {
-            onItemClicked(movieItem)
-            navController.navigate("movieDetails")
+            val intent = Intent(context, DetailActivity::class.java)
+            intent.putExtra(DetailActivity.ID, movieItem.id)
+            context.startActivity(intent)
         })
 }
 
@@ -43,7 +46,7 @@ fun ListViewItem(
         shape = RoundedCornerShape(8.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            MovieImageBanner(imagePath = movieItem.backdrop_path)
+            MovieImageBanner(imagePath = movieItem.backdrop_path ?: "")
             MovieMetadataItem(movieItem = movieItem)
         }
     }
@@ -56,7 +59,7 @@ fun MovieImageBanner(imagePath: String) {
         modifier = Modifier
             .width(180.dp)
             .height(100.dp), painter = rememberCoilPainter(
-            request = Constants.BASE_IMAGE_URL + imagePath
+            request = BASE_IMAGE_URL + imagePath
         ),
         contentDescription = ""
     )
@@ -75,7 +78,7 @@ fun MovieMetadataItem(movieItem: MovieItem) {
                 text = it
             )
             Text(
-                text = movieItem.vote_average,
+                text = movieItem.vote_average ?: "",
                 style = MaterialTheme.typography.body1
             )
         }

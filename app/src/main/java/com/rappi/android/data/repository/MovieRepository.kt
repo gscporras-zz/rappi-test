@@ -1,39 +1,48 @@
 package com.rappi.android.data.repository
 
-import android.util.Log
 import com.rappi.android.BuildConfig.ApiKey
 import com.rappi.android.data.model.MovieItem
+import com.rappi.android.data.model.MovieResponse
 import com.rappi.android.data.network.MovieFetchApi
+import com.rappi.android.utils.CustomError
+import com.rappi.android.utils.CustomResult
+import com.rappi.android.utils.LANGUAGE
 
 class MovieRepository (private val movieFetchApi: MovieFetchApi) {
 
-    sealed class Result {
-        object LOADING : Result()
-        data class Success(val movieList : List<MovieItem>) :Result()
-        data class Failure(val throwable: Throwable): Result()
-    }
-
-    suspend fun fetchPopularMovies(): Result {
+    suspend fun fetchPopularMovies(): CustomResult<MovieResponse> {
         return try {
-            val movieList = movieFetchApi.fetchPopularList(ApiKey, "en-US", 1).results
-            Log.d("MOVIELIST","success "+movieList.size)
-            Result.Success(movieList = movieList)
-        }catch (exception:Exception){
-            Log.d("MOVIELIST","failure ")
-
-            Result.Failure(exception)
+            val movies = movieFetchApi.fetchPopularList(ApiKey, LANGUAGE, 1)
+            CustomResult.OnSuccess(movies)
+        } catch (ex: Exception) {
+            CustomResult.OnError(CustomError(message = ex.message))
         }
     }
 
-    suspend fun fetchTopRatedMovies(): Result {
+    suspend fun fetchTopRatedMovies(): CustomResult<MovieResponse> {
         return try {
-            val movieList = movieFetchApi.fetchTopRatedList(ApiKey, "en-US", 1).results
-            Log.d("MOVIELIST","success "+movieList.size)
-            Result.Success(movieList = movieList)
-        }catch (exception:Exception){
-            Log.d("MOVIELIST","failure ")
+            val movies = movieFetchApi.fetchTopRatedList(ApiKey, LANGUAGE, 1)
+            CustomResult.OnSuccess(movies)
+        } catch (ex: Exception) {
+            CustomResult.OnError(CustomError(message = ex.message))
+        }
+    }
 
-            Result.Failure(exception)
+    suspend fun fetchMovieDetail(movieId: Int?): CustomResult<MovieItem> {
+        return try {
+            val movie = movieFetchApi.fetchMovieDetail(movieId, ApiKey, LANGUAGE)
+            CustomResult.OnSuccess(movie)
+        } catch (ex: Exception) {
+            CustomResult.OnError(CustomError(message = ex.message))
+        }
+    }
+
+    suspend fun fetchSearchMovies(query: String?): CustomResult<MovieResponse> {
+        return try {
+            val movies = movieFetchApi.fetchSearchMovies(query, ApiKey, LANGUAGE, false)
+            CustomResult.OnSuccess(movies)
+        } catch (ex: Exception) {
+            CustomResult.OnError(CustomError(message = ex.message))
         }
     }
 }

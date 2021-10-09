@@ -4,12 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -17,12 +19,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.rappi.android.ui.app.details.MovieDetails
 import com.rappi.android.ui.app.list.PopularList
 import com.rappi.android.ui.app.list.TopRatedList
 import com.rappi.android.ui.theme.RappiTestTheme
 import com.rappi.android.ui.theme.dmSansFamily
 import com.rappi.android.ui.viewmodel.MainViewModel
 import com.rappi.android.utils.NavigationItem
+import com.rappi.android.utils.startActivity
 
 class MainActivity : ComponentActivity() {
 
@@ -41,10 +45,19 @@ class MainActivity : ComponentActivity() {
 
             RappiTestTheme {
                 Scaffold(
-                    topBar = { TopBar(currentScreen = currentScreen) },
-                    bottomBar = { BottomNavigationBar(navController = navController, currentRoute = currentRoute) }) {
-                    Navigation(navController)
-                }
+                    topBar = {
+                        if(currentRoute == NavigationItem.Popular.route ||  currentRoute == NavigationItem.TopRated.route) {
+                            TopBar(currentScreen = currentScreen)
+                        }
+                             },
+                    content = {
+                        Navigation(navController)
+                    },
+                    bottomBar = {
+                        if(currentRoute == NavigationItem.Popular.route ||  currentRoute == NavigationItem.TopRated.route) {
+                            BottomNavigationBar(navController = navController, currentRoute = currentRoute)
+                        }
+                    })
             }
         }
     }
@@ -54,7 +67,12 @@ class MainActivity : ComponentActivity() {
         TopAppBar(
             title = { Text(text = currentScreen ?: "", fontFamily = dmSansFamily, fontWeight = FontWeight.Bold, fontSize = 18.sp) },
             backgroundColor = colorResource(id = R.color.white),
-            contentColor = colorResource(id = R.color.black)
+            contentColor = colorResource(id = R.color.black),
+            actions = {
+                IconButton(onClick = { startActivity<SearchActivity>() }) {
+                    Icon(painter = painterResource(id = R.drawable.ic_search), contentDescription = "")
+                }
+            }
         )
     }
 
@@ -98,15 +116,12 @@ class MainActivity : ComponentActivity() {
         NavHost(navController, startDestination = NavigationItem.Popular.route) {
             composable(NavigationItem.Popular.route) {
                 Surface(color = MaterialTheme.colors.background) {
-                    PopularList(navController = navController, mainViewModel = mainViewModel)
+                    PopularList(context = this@MainActivity, navController = navController, mainViewModel = mainViewModel)
                 }
             }
             composable(NavigationItem.TopRated.route) {
-                /*val id = it.arguments?.getString("id")
-                requireNotNull(id)
-                MovieDetails(mainViewModel.clickedItem, id)*/
                 Surface(color = MaterialTheme.colors.background) {
-                    TopRatedList(navController = navController, mainViewModel = mainViewModel)
+                    TopRatedList(context = this@MainActivity, navController = navController, mainViewModel = mainViewModel)
                 }
             }
         }
