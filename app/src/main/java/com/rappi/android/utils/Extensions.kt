@@ -1,37 +1,54 @@
 package com.rappi.android.utils
 
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.getSystemService
 
-@Composable
-fun ScrollableColumn(
-    modifier: Modifier = Modifier,
-    scrollState: ScrollState = rememberScrollState(0),
-    verticalArrangement: Arrangement.Vertical = Arrangement.Top,
-    horizontalGravity: Alignment.Horizontal = Alignment.Start,
-    reverseScrollDirection: Boolean = false,
-    isScrollEnabled: Boolean = true,
-    //contentPadding: InnerPadding = InnerPadding(0.dp),
-    children: @Composable ColumnScope.() -> Unit
-) {
+inline fun <reified T : Activity> Activity.startActivity() {
+    startActivity(Intent(this, T::class.java))
 }
 
-@Composable
-fun ScrollableRow(
-    modifier: Modifier = Modifier,
-    scrollState: ScrollState = rememberScrollState(0),
-    horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
-    verticalGravity: Alignment.Vertical = Alignment.Top,
-    reverseScrollDirection: Boolean = false,
-    isScrollEnabled: Boolean = true,
-    //contentPadding: InnerPadding = InnerPadding(0.dp),
-    children: @Composable RowScope.() -> Unit
-) {
+
+inline fun <reified T : Activity> Activity.startActivity(body: Intent.() -> Unit) {
+    startActivity(intentFor<T>(body))
+}
+
+
+inline fun <reified T : Activity> Activity.intentFor(body: Intent.() -> Unit) =
+    Intent(this, T::class.java).apply(body)
+
+
+inline fun <reified T : Activity> Activity.startActivityWithFlags(body: Intent.() -> Unit) {
+    startActivity(intentFor<T>(body).apply {
+        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+    })
+}
+
+
+inline fun <reified T : Activity> Activity.startActivityWithFlags() {
+    startActivity(Intent(this, T::class.java).apply {
+        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+    })
+}
+
+inline fun <reified T : Activity> Activity.startActivityForResult(requestCode: Int) {
+    startActivityForResult(Intent(this, T::class.java), requestCode)
+}
+
+
+inline fun <reified T : Activity> Activity.startActivityForResult(requestCode: Int, body: Intent.() -> Unit) {
+    startActivityForResult(intentFor<T>(body), requestCode)
+}
+
+fun Context.showKeyboard() {
+    val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+}
+
+fun Context.hideKeyboard(view: View) {
+    val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }

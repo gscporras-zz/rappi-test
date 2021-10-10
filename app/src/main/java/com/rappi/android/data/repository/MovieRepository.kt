@@ -11,6 +11,15 @@ import com.rappi.android.utils.LANGUAGE
 
 class MovieRepository (private val movieFetchApi: MovieFetchApi) {
 
+    suspend fun fetchMovieLatest(): CustomResult<MovieResponse> {
+        return try {
+            val movies = movieFetchApi.fetchMovieLatest(ApiKey, LANGUAGE, 1)
+            CustomResult.OnSuccess(movies)
+        } catch (ex: Exception) {
+            CustomResult.OnError(CustomError(message = ex.message))
+        }
+    }
+
     suspend fun fetchPopularMovies(): CustomResult<MovieResponse> {
         return try {
             val movies = movieFetchApi.fetchPopularList(ApiKey, LANGUAGE, 1)

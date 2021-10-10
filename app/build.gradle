@@ -136,6 +136,7 @@ dependencies {
     implementation appDependencies.composeRxJava
     implementation appDependencies.composeRuntime
     implementation appDependencies.composeNavigation
+    implementation appDependencies.boneToolbarCompose
 
     def dataDependencies = rootProject.ext.dataDependencies
     implementation dataDependencies.retrofit

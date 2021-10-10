@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScrollableTabRow
+import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.rappi.android.ui.app.details.MovieDetails
@@ -30,7 +31,7 @@ class DetailActivity: AppCompatActivity() {
         mainViewModel.fetchVideosDetail(intent?.extras?.getInt(ID))
         setContent {
             RappiTestTheme {
-                Scaffold(modifier = Modifier.background(Color.Blue)) {
+                Surface(color = Color.Black) {
                     MovieDetails(mainViewModel.movie, mainViewModel.videos)
                 }
             }

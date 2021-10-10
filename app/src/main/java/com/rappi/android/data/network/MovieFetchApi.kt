@@ -8,6 +8,14 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MovieFetchApi {
+
+    @GET("movie/upcoming")
+    suspend fun fetchMovieLatest(
+        @Query("api_key") apiKey: String?,
+        @Query("language") language: String?,
+        @Query("page") page: Int?
+    ): MovieResponse
+
     @GET("movie/popular")
     suspend fun fetchPopularList(
         @Query("api_key") apiKey: String?,

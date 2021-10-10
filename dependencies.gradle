@@ -39,7 +39,9 @@ ext {
             composeLiveData     : "androidx.compose.runtime:runtime-livedata:$composeVersion",
             composeRxJava       : "androidx.compose.runtime:runtime-rxjava2:$composeVersion",
             composeRuntime      : "androidx.compose.runtime:runtime:$composeVersion",
-            composeNavigation   : "androidx.navigation:navigation-compose:2.4.0-alpha09"
+            composeNavigation   : "androidx.navigation:navigation-compose:2.4.0-alpha09",
+
+            boneToolbarCompose  : "me.onebone:toolbar-compose:2.2.0"
     ]
 
     retrofitVersion             = '2.6.0'

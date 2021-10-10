@@ -17,15 +17,27 @@ import kotlinx.coroutines.launch
 class MainViewModel : ViewModel() {
     private val apiService = MovieApiClient.service
     private lateinit var repository: MovieRepository
+    var movieLatest: List<MovieItem> by mutableStateOf(listOf())
     var popularMovies: List<MovieItem> by mutableStateOf(listOf())
     var topRatedMovies: List<MovieItem> by mutableStateOf(listOf())
     var movie: MovieItem by mutableStateOf(MovieItem())
     var moviesSearched: List<MovieItem> by mutableStateOf(listOf())
     var videos: List<VideoItem> by mutableStateOf(listOf())
 
-    init {
-        fetchPopularMovies()
-        fetchTopRatedMovies()
+    fun fetchMovieLatest() {
+        repository = MovieRepository(apiService)
+        viewModelScope.launch {
+            when (val response = repository.fetchMovieLatest()) {
+                is CustomResult.OnSuccess -> {
+                    Log.d("MainViewModel", "Success")
+                    movieLatest = response.data.results
+                }
+                is CustomResult.OnError -> {
+                    Log.d("MainViewModel", "FAILURE")
+                }
+                else -> {}
+            }
+        }
     }
 
     fun fetchPopularMovies() {

@@ -4,16 +4,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -21,8 +23,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.rappi.android.ui.app.list.PopularList
-import com.rappi.android.ui.app.list.TopRatedList
+import com.rappi.android.ui.app.home.HomeList
+import com.rappi.android.ui.app.list.MovieList
 import com.rappi.android.ui.theme.RappiTestTheme
 import com.rappi.android.ui.theme.dmSansFamily
 import com.rappi.android.ui.viewmodel.MainViewModel
@@ -46,17 +48,14 @@ class MainActivity : ComponentActivity() {
 
             RappiTestTheme {
                 Scaffold(
-                    topBar = {
-                        if(currentRoute == NavigationItem.Popular.route ||  currentRoute == NavigationItem.TopRated.route) {
-                            TopBar(currentScreen = currentScreen)
-                        }
-                             },
                     bottomBar = {
-                        if(currentRoute == NavigationItem.Popular.route ||  currentRoute == NavigationItem.TopRated.route) {
-                            BottomNavigationBar(navController = navController, currentRoute = currentRoute)
-                        }
-                    }) { innerPadding ->
-                    Navigation(navController, innerPadding)
+                        BottomNavigationBar(navController = navController, currentRoute = currentRoute)
+                    }
+                ) { innerPadding ->
+                    Box {
+                        Navigation(navController, innerPadding)
+                        TopBar(currentScreen = currentScreen)
+                    }
                 }
             }
         }
@@ -66,32 +65,37 @@ class MainActivity : ComponentActivity() {
     fun TopBar(currentScreen: String?) {
         TopAppBar(
             title = { Text(text = currentScreen ?: "", fontFamily = dmSansFamily, fontWeight = FontWeight.Bold, fontSize = 18.sp) },
-            backgroundColor = colorResource(id = R.color.white),
-            contentColor = colorResource(id = R.color.black),
+            backgroundColor = Color.Transparent,
+             modifier = Modifier.background(Brush.verticalGradient(
+                listOf(Color.Black, colorResource(id = R.color.black_50), Color.Transparent)
+            )),
+            contentColor = colorResource(id = R.color.white),
             actions = {
                 IconButton(onClick = { startActivity<SearchActivity>() }) {
                     Icon(painter = painterResource(id = R.drawable.ic_search), contentDescription = "")
                 }
-            }
+            },
+            elevation = 0.dp
         )
     }
 
     @Composable
     fun BottomNavigationBar(navController: NavController, currentRoute: String?) {
         val items = listOf(
+            NavigationItem.Home,
             NavigationItem.Popular,
             NavigationItem.TopRated
         )
         BottomNavigation(
-            backgroundColor = colorResource(id = R.color.white),
-            contentColor = colorResource(id = R.color.black)
+            backgroundColor = colorResource(id = R.color.black),
+            contentColor = colorResource(id = R.color.white)
         ) {
             items.forEach { item ->
                 BottomNavigationItem(
                     icon = { Icon(painterResource(id = item.icon), contentDescription = item.title) },
                     label = { Text(text = item.title) },
-                    selectedContentColor = colorResource(id = R.color.black),
-                    unselectedContentColor = colorResource(id = R.color.black_30),
+                    selectedContentColor = colorResource(id = R.color.white),
+                    unselectedContentColor = colorResource(id = R.color.white_50),
                     alwaysShowLabel = true,
                     selected = currentRoute == item.route,
                     onClick = {
@@ -113,15 +117,28 @@ class MainActivity : ComponentActivity() {
     @ExperimentalFoundationApi
     @Composable
     fun Navigation(navController: NavHostController, innerPadding: PaddingValues) {
-        NavHost(navController, startDestination = NavigationItem.Popular.route, modifier = Modifier.padding(innerPadding)) {
+        NavHost(navController, startDestination = NavigationItem.Home.route, modifier = Modifier
+            .padding(innerPadding)
+            .background(Color.Black)) {
+            composable(NavigationItem.Home.route) {
+                mainViewModel.fetchMovieLatest()
+                Surface(
+                    color = Color.Black,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    HomeList(mainViewModel.movieLatest)
+                }
+            }
             composable(NavigationItem.Popular.route) {
-                Surface(color = MaterialTheme.colors.background) {
-                    PopularList(context = this@MainActivity, mainViewModel = mainViewModel)
+                mainViewModel.fetchPopularMovies()
+                Surface {
+                    MovieList(mainViewModel.popularMovies)
                 }
             }
             composable(NavigationItem.TopRated.route) {
-                Surface(color = MaterialTheme.colors.background) {
-                    TopRatedList(context = this@MainActivity, mainViewModel = mainViewModel)
+                mainViewModel.fetchTopRatedMovies()
+                Surface {
+                    MovieList(mainViewModel.topRatedMovies)
                 }
             }
         }

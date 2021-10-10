@@ -31,6 +31,9 @@ import com.rappi.android.ui.app.video.ListVideoItem
 import com.rappi.android.ui.theme.Typography
 import com.rappi.android.ui.theme.dmSansFamily
 import com.rappi.android.utils.BASE_IMAGE_URL
+import me.onebone.toolbar.CollapsingToolbarScaffold
+import me.onebone.toolbar.ScrollStrategy
+import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 
 @Composable
 fun MovieDetails(movieItem: MovieItem, videos: List<VideoItem>) {
@@ -59,7 +62,7 @@ fun MovieDetails(movieItem: MovieItem, videos: List<VideoItem>) {
         Icons.Default.Star,
         Icons.Default.Star
     )
-    Box(
+    /*Box(
         modifier = Modifier
             .background(color = colorResource(id = R.color.black))
             .fillMaxSize()) {
@@ -81,6 +84,127 @@ fun MovieDetails(movieItem: MovieItem, videos: List<VideoItem>) {
             MovieDetailsText(movieItem = movieItem)
             MovieDetailsTrailers(videos = videos)
         }
+    }*/
+
+    val state = rememberCollapsingToolbarScaffoldState()
+    CollapsingToolbarScaffold(
+        modifier = Modifier.fillMaxSize(),
+        state = state,
+        scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
+        toolbarModifier = Modifier.background(Color.Black),
+        toolbar = {
+            val textSize = (18 + (30 - 18) * state.toolbarState.progress).sp
+
+            Box(
+                modifier = Modifier
+                    //.background(Color.Black)
+                    .fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter,
+
+            ) {
+                Column(
+                    modifier = Modifier
+                        //.align(Alignment.BottomCenter)
+                        //.parallax(0.5f)
+                        /*.graphicsLayer {
+                            // change alpha of Image as the toolbar expands
+                            alpha = state.toolbarState.progress
+                        }*/
+                        .background(Color.Cyan)
+                        .padding(8.dp)
+                        //.road(Alignment.CenterStart, Alignment.BottomStart)
+                ) {
+                    Text(
+                        text = movieItem.title ?: "",
+                        modifier = Modifier.fillMaxWidth(),
+                        color = colorResource(id = R.color.white),
+                        style = Typography.h1,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = genres.value,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        color = colorResource(id = R.color.white_80),
+                        style = Typography.body2,
+                        textAlign = TextAlign.Center)
+                    MovieDetailsReview(movieItem = movieItem, listState = listState, starts = starts, score = score)
+                }
+            }
+
+            Image(
+                modifier = Modifier
+                    //.pin()
+                    //.parallax(0.5f)
+                    .aspectRatio(0.6f)
+                    .graphicsLayer {
+                        // change alpha of Image as the toolbar expands
+                        alpha = state.toolbarState.progress
+                    }
+                    .onGloballyPositioned {
+                        width.value = it.size.width / density
+                        height.value = it.size.height / density
+                    },
+                painter = rememberCoilPainter(request = imageUrl.value),
+                contentDescription = "",
+                contentScale = ContentScale.Crop
+            )
+
+            Column(
+                Modifier
+                    .pin()
+                    .parallax(0.5f)
+                    .size(width.value.dp, height.value.dp)
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(
+                                Color.Transparent,
+                                colorResource(id = R.color.black)
+                            )
+                        )
+                    )
+            ) {}
+
+            Column(
+                modifier = Modifier
+                    //.align(Alignment.BottomCenter)
+                    //.parallax(0.5f)
+                    /*.graphicsLayer {
+                        // change alpha of Image as the toolbar expands
+                        alpha = state.toolbarState.progress
+                    }*/
+                    .fillMaxSize()
+                    .background(Color.Green)
+                    .padding(8.dp),
+                //.road(Alignment.CenterStart, Alignment.BottomStart)
+            ) {
+                Text(
+                    text = movieItem.title ?: "",
+                    modifier = Modifier.fillMaxWidth(),
+                    color = colorResource(id = R.color.white),
+                    style = Typography.h1,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = genres.value,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    color = colorResource(id = R.color.white_80),
+                    style = Typography.body2,
+                    textAlign = TextAlign.Center)
+                MovieDetailsReview(movieItem = movieItem, listState = listState, starts = starts, score = score)
+            }
+    }) {
+        LazyColumn(modifier = Modifier
+            .fillMaxSize()
+        ) {
+            item {
+                MovieDetailsText(movieItem = movieItem)
+                MovieDetailsTrailers(videos = videos)
+            }
+        }
     }
 }
 
@@ -101,9 +225,6 @@ fun MovieDetailsBanner(
         Image(
                 modifier = Modifier
                     .aspectRatio(0.6f)
-                    .graphicsLayer {
-                        translationY = imageOffset
-                    }
                     .onGloballyPositioned {
                         width.value = it.size.width / density
                         height.value = it.size.height / density
@@ -115,9 +236,6 @@ fun MovieDetailsBanner(
             Column(
                 Modifier
                     .size(width.value.dp, height.value.dp)
-                    .graphicsLayer {
-                        translationY = imageOffset
-                    }
                     .background(
                         Brush.verticalGradient(
                             listOf(
@@ -130,9 +248,6 @@ fun MovieDetailsBanner(
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .graphicsLayer {
-                    translationY = imageOffset
-                }
                 .padding(8.dp)
         ) {
             Text(
