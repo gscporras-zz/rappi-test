@@ -28,7 +28,7 @@ class DetailViewModel @Inject constructor(
 
     val castListFlow = movieIdSharedFlow.flatMapLatest {
         movieRepository.loadCastList(it)
-    }.shareIn(viewModelScope, SharingStarted.WhileSubscribed(), replay = 1)
+    }
 
     val keywordListFlow = movieIdSharedFlow.flatMapLatest {
         movieRepository.loadKeywordList(it)
@@ -39,7 +39,7 @@ class DetailViewModel @Inject constructor(
     }
 
     init {
-        Timber.d("Injection MovieDetailViewModel")
+        Timber.d("Injection DetailViewModel")
     }
 
     fun fetchMovieDetailsById(id: Int) = movieIdSharedFlow.tryEmit(id)

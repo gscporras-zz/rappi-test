@@ -232,7 +232,7 @@ fun MovieDetailsText(viewModel: TopRatedViewModel) {
 fun MovieDetailsTrailers(viewModel: TopRatedViewModel) {
     val videos: List<Video>? by viewModel.videoListFlow.collectAsState(initial = null)
 
-    videos?.let {
+    if(!videos.isNullOrEmpty()) {
         Column(Modifier.padding(top = 16.dp)) {
             val listState = rememberLazyListState()
 
@@ -246,7 +246,7 @@ fun MovieDetailsTrailers(viewModel: TopRatedViewModel) {
                 state = listState,
                 modifier = Modifier.padding(top = 8.dp)
             ) {
-                items(it) { video ->
+                items(videos!!) { video ->
                     VideoThumbnail(video)
                 }
             }
@@ -334,7 +334,7 @@ fun VideoThumbnail(video: Video) {
             }
 
             Text(
-                text = video.name,
+                text = video.name ?: "",
                 style = Typography.body2,
                 textAlign = TextAlign.Center,
                 maxLines = 1,

@@ -69,26 +69,18 @@ fun MainScreen(currentRoute: String?, currentScreen: String?) {
 
         composable(
             route = NavScreen.PopularDetails.routeWithArgument,
-            arguments = listOf(
-                navArgument(NavScreen.PopularDetails.argument0) { type = NavType.IntType }
-            )
-        ) { backStackEntry ->
-
-            val movieId = backStackEntry.arguments?.getInt(NavScreen.PopularDetails.argument0) ?: return@composable
-
+            arguments = listOf(navArgument(NavScreen.PopularDetails.argument0) { type = NavType.IntType })
+        ) {
+            val movieId = it.arguments?.getInt(NavScreen.PopularDetails.argument0) ?: return@composable
             PopularDetailScreen(movieId, hiltViewModel()) {
                 navController.navigateUp()
             }
         }
         composable(
             route = NavScreen.TopRatedDetails.routeWithArgument,
-            arguments = listOf(
-                navArgument(NavScreen.TopRatedDetails.argument0) { type = NavType.IntType }
-            )
-        ) { backStackEntry ->
-
-            val movieId = backStackEntry.arguments?.getInt(NavScreen.TopRatedDetails.argument0) ?: return@composable
-
+            arguments = listOf(navArgument(NavScreen.TopRatedDetails.argument0) { type = NavType.IntType })
+        ) {
+            val movieId = it.arguments?.getInt(NavScreen.TopRatedDetails.argument0) ?: return@composable
             TopRatedDetailScreen(movieId, hiltViewModel()) {
                 navController.navigateUp()
             }
