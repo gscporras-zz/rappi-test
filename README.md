@@ -5,12 +5,6 @@ Rappi Test is a small demo application based on modern Android tech stacks espec
 </p>
 </br>
 
-<p align="center">
-<img src="/previews/preview2.png" />
-</p>
-
-<img src="/previews/preview0.gif" align="right" width="32%"/>
-
 ## Tech stack & Open-source libraries
 - Minimum SDK level 23
 - 100% [Kotlin](https://kotlinlang.org/) based + [Coroutines](https://github.com/Kotlin/kotlinx.coroutines) + [Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/) for asynchronous.
