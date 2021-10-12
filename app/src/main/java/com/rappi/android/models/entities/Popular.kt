@@ -3,17 +3,13 @@ package com.rappi.android.models.entities
 import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import com.rappi.android.models.Cast
-import com.rappi.android.models.Keyword
-import com.rappi.android.models.Review
 import com.rappi.android.models.Video
 
 @Immutable
 @Entity(primaryKeys = [("id")])
 data class Popular(
     var page: Int? = null,
-    var keywords: List<Keyword>? = listOf(),
     var videos: List<Video>? = listOf(),
-    var reviews: List<Review>? = listOf(),
     var casts: List<Cast>? = listOf(),
     val poster_path: String? = null,
     val adult: Boolean? = null,

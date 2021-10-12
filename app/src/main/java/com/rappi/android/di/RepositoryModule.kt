@@ -1,12 +1,10 @@
 package com.rappi.android.di
 
 import com.rappi.android.network.service.MovieService
-import com.rappi.android.repository.MovieRepository
-import com.rappi.android.repository.TopRatedRepository
-import com.rappi.android.repository.PopularRepository
-import com.rappi.android.room.MovieDao
-import com.rappi.android.room.TopRatedDao
-import com.rappi.android.room.PopularDao
+import com.rappi.android.network.service.SearchService
+import com.rappi.android.network.service.TvService
+import com.rappi.android.repository.*
+import com.rappi.android.room.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,6 +14,15 @@ import dagger.hilt.android.scopes.ViewModelScoped
 @Module
 @InstallIn(ViewModelComponent::class)
 object RepositoryModule {
+
+    @Provides
+    @ViewModelScoped
+    fun provideTvRepository(
+        tvService: TvService,
+        tvDao: TvDao
+    ): TvRepository {
+        return TvRepository(tvService, tvDao)
+    }
 
     @Provides
     @ViewModelScoped
@@ -42,5 +49,14 @@ object RepositoryModule {
         topRatedDao: TopRatedDao
     ): TopRatedRepository {
         return TopRatedRepository(movieService, topRatedDao)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideSearchRepository(
+        searchService: SearchService,
+        searchDao: SearchDao
+    ): SearchRepository {
+        return SearchRepository(searchService, searchDao)
     }
 }

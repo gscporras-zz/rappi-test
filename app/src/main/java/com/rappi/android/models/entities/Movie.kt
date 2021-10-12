@@ -3,22 +3,19 @@ package com.rappi.android.models.entities
 import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import com.rappi.android.models.Cast
-import com.rappi.android.models.Keyword
-import com.rappi.android.models.Review
 import com.rappi.android.models.Video
 
 @Immutable
 @Entity(primaryKeys = [("id")])
 data class Movie(
     var page: Int? = null,
-    var keywords: List<Keyword>? = listOf(),
     var videos: List<Video>? = listOf(),
-    var reviews: List<Review>? = listOf(),
     var casts: List<Cast>? = listOf(),
     val poster_path: String? = null,
     val adult: Boolean? = null,
     val overview: String? = null,
     val release_date: String? = null,
+    val first_air_date: String? = null,
     val genre_ids: List<Int>? = null,
     val id: Int? = null,
     val original_title: String? = null,

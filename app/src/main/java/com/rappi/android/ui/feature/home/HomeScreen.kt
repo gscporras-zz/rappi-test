@@ -18,7 +18,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.palette.graphics.Palette
-import com.rappi.android.models.entities.Movie
+import com.rappi.android.models.entities.Tv
 import com.rappi.android.models.network.NetworkState
 import com.rappi.android.models.network.onLoading
 import com.rappi.android.network.Api
@@ -34,8 +34,8 @@ fun HomeScreen(
     selectPoster: (MainScreenHomeTab, Int) -> Unit,
     lazyListState: LazyListState
 ) {
-    val networkState: NetworkState by viewModel.movieLoadingState
-    val movies by viewModel.movies
+    val networkState: NetworkState by viewModel.tvLoadingState
+    val movies by viewModel.tvs
 
     LazyColumn(
         state = lazyListState
@@ -43,7 +43,7 @@ fun HomeScreen(
 
         paging(
             items = movies,
-            currentIndexFlow = viewModel.moviePageStateFlow,
+            currentIndexFlow = viewModel.tvPageStateFlow,
             fetch = { viewModel.fetchNextMoviePage() }
         ) {
 
@@ -70,7 +70,7 @@ fun HomeScreen(
 
 @Composable
 fun MoviePoster(
-    movie: Movie,
+    movie: Tv,
     selectPoster: (MainScreenHomeTab, Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -80,14 +80,13 @@ fun MoviePoster(
             .wrapContentHeight()
             .clickable(
                 onClick = {
-                    selectPoster(MainScreenHomeTab.HOME, movie.id ?: 0)
+                    selectPoster(MainScreenHomeTab.TV, movie.id ?: 0)
                 }
             ),
         color = MaterialTheme.colors.onBackground
     ) {
 
         Box {
-            //val (box, crossfade) = createRefs()
 
             val density = LocalDensity.current.density
             val width = remember { mutableStateOf(0f) }

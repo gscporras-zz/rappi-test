@@ -6,25 +6,32 @@ import com.rappi.android.ui.feature.main.MainScreenHomeTab
 @Immutable
 sealed class NavScreen(val route: String) {
 
-    object Home : NavScreen("Home")
+    object Tv : NavScreen("tv")
 
-    object MovieDetails : NavScreen("MovieDetails") {
+    object Search : NavScreen("search") {
 
-        const val routeWithArgument: String = "MovieDetails/{movieId}"
-
-        const val argument0: String = "movieId"
-    }
-
-    object PopularDetails : NavScreen("PopularDetails") {
-
-        const val routeWithArgument: String = "PopularDetails/{movieId}"
+        const val routeWithArgument: String = "search/{movieId}"
 
         const val argument0: String = "movieId"
     }
 
-    object TopRatedDetails : NavScreen("TopRatedDetails") {
+    object MovieDetails : NavScreen("details") {
 
-        const val routeWithArgument: String = "TopRatedDetails/{movieId}"
+        const val routeWithArgument: String = "details/{movieId}"
+
+        const val argument0: String = "movieId"
+    }
+
+    object PopularDetails : NavScreen("popular") {
+
+        const val routeWithArgument: String = "popular/{movieId}"
+
+        const val argument0: String = "movieId"
+    }
+
+    object TopRatedDetails : NavScreen("topRated") {
+
+        const val routeWithArgument: String = "topRated/{movieId}"
 
         const val argument0: String = "movieId"
     }

@@ -99,7 +99,7 @@ inline fun <T> LazyGridScope.pagingGrid(
 fun String.fromRoute() : String {
     var title = ""
     when(this) {
-        NavScreen.Home.route -> title = ""
+        NavScreen.Tv.route -> title = ""
         NavScreen.PopularDetails.route -> title = "Popular"
         NavScreen.TopRatedDetails.route -> title = "TopRated"
     }

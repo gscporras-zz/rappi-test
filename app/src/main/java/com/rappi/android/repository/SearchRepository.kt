@@ -3,8 +3,8 @@ package com.rappi.android.repository
 import androidx.annotation.WorkerThread
 import com.rappi.android.models.Cast
 import com.rappi.android.models.Video
-import com.rappi.android.network.service.MovieService
-import com.rappi.android.room.TopRatedDao
+import com.rappi.android.network.service.SearchService
+import com.rappi.android.room.SearchDao
 import com.skydoves.sandwich.onError
 import com.skydoves.sandwich.onException
 import com.skydoves.sandwich.suspendOnSuccess
@@ -14,24 +14,24 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
 import timber.log.Timber
 
-class TopRatedRepository constructor(
-    private val movieService: MovieService,
-    private val topRatedDao: TopRatedDao
-) : Repository {
+class SearchRepository constructor(
+    private val searchService: SearchService,
+    private val searchDao: SearchDao
+) {
 
     init {
-        Timber.d("Injection TopRatedRepository")
+        Timber.d("Injection SearchRepository")
     }
 
     @WorkerThread
-    fun loadTopRated(page: Int, success: () -> Unit, error: () -> Unit) = flow {
-        var movies = topRatedDao.getMovieList(page) ?: return@flow
+    fun loadMovies(query: String?, page: Int, success: () -> Unit, error: () -> Unit) = flow {
+        var movies = searchDao.getMovieList(query, page)
         if (movies.isEmpty()) {
-            val response = movieService.fetchTopRatedPeople(page)
+            val response = searchService.fetchSearchedMovie(query, page)
             response.suspendOnSuccess {
                 movies = data.results
                 movies.forEach { it.page = page }
-                topRatedDao.insertMovieList(movies)
+                searchDao.insertMovieList(movies)
                 emit(movies)
             }.onError {
                 error()
@@ -43,14 +43,14 @@ class TopRatedRepository constructor(
 
     @WorkerThread
     fun loadVideoList(id: Int) = flow<List<Video>> {
-        val movie = topRatedDao.getMovie(id)
+        val movie = searchDao.getMovie(id)
         var videos = movie.videos
         if (videos.isNullOrEmpty()) {
-            movieService.fetchVideos(id)
+            searchService.fetchVideos(id)
                 .suspendOnSuccess {
                     videos = data.results
                     movie.videos = videos
-                    topRatedDao.updateMovie(movie)
+                    searchDao.updateMovie(movie)
                     emit(videos ?: listOf())
                 }
         } else {
@@ -60,14 +60,14 @@ class TopRatedRepository constructor(
 
     @WorkerThread
     fun loadCastList(id: Int) = flow<List<Cast>> {
-        val movie = topRatedDao.getMovie(id)
+        val movie = searchDao.getMovie(id)
         var casts = movie.casts
         if (casts.isNullOrEmpty()) {
-            movieService.fetchCasts(id)
+            searchService.fetchCasts(id)
                 .suspendOnSuccess {
                     casts = data.cast
                     movie.casts = casts
-                    topRatedDao.updateMovie(movie)
+                    searchDao.updateMovie(movie)
                     emit(casts ?: listOf())
                 }
         } else {
@@ -77,7 +77,13 @@ class TopRatedRepository constructor(
 
     @WorkerThread
     fun loadMovieById(id: Int) = flow {
-        val movie = topRatedDao.getMovie(id)
+        val movie = searchDao.getMovie(id)
         emit(movie)
+    }.flowOn(Dispatchers.IO)
+
+    @WorkerThread
+    fun loadPersonById(id: Int) = flow {
+        val person = searchDao.getMovie(id)
+        emit(person)
     }.flowOn(Dispatchers.IO)
 }

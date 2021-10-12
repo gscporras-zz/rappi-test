@@ -30,14 +30,6 @@ class PopularViewModel @Inject constructor(
         popularRepository.loadCastList(it)
     }.shareIn(viewModelScope, SharingStarted.WhileSubscribed(), replay = 1)
 
-    val keywordListFlow = movieIdSharedFlow.flatMapLatest {
-        popularRepository.loadKeywordList(it)
-    }
-
-    val reviewListFlow = movieIdSharedFlow.flatMapLatest {
-        popularRepository.loadReviewsList(it)
-    }
-
     init {
         Timber.d("Injection PopularViewModel")
     }

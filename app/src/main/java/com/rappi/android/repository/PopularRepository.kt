@@ -2,10 +2,7 @@ package com.rappi.android.repository
 
 import androidx.annotation.WorkerThread
 import com.rappi.android.models.Cast
-import com.rappi.android.models.Keyword
-import com.rappi.android.models.Review
 import com.rappi.android.models.Video
-import com.rappi.android.models.entities.Movie
 import com.rappi.android.network.service.MovieService
 import com.rappi.android.room.PopularDao
 import com.skydoves.sandwich.onError
@@ -75,40 +72,6 @@ class PopularRepository constructor(
                 }
         } else {
             emit(casts ?: listOf())
-        }
-    }.flowOn(Dispatchers.IO)
-
-    @WorkerThread
-    fun loadKeywordList(id: Int) = flow<List<Keyword>> {
-        val movie = popularDao.getMovie(id)
-        var keywords = movie.keywords
-        if (keywords.isNullOrEmpty()) {
-            val response = movieService.fetchKeywords(id)
-            response.suspendOnSuccess {
-                keywords = data.keywords
-                movie.keywords = keywords
-                emit(keywords ?: listOf())
-                popularDao.updateMovie(movie)
-            }
-        } else {
-            emit(keywords ?: listOf())
-        }
-    }.flowOn(Dispatchers.IO)
-
-    @WorkerThread
-    fun loadReviewsList(id: Int) = flow<List<Review>> {
-        val movie = popularDao.getMovie(id)
-        var reviews = movie.reviews
-        if (reviews.isNullOrEmpty()) {
-            movieService.fetchReviews(id)
-                .suspendOnSuccess {
-                    reviews = data.results
-                    movie.reviews = reviews
-                    popularDao.updateMovie(movie)
-                    emit(reviews ?: listOf())
-                }
-        } else {
-            emit(reviews ?: listOf())
         }
     }.flowOn(Dispatchers.IO)
 

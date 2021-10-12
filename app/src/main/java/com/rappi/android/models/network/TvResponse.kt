@@ -1,11 +1,13 @@
 package com.rappi.android.models.network
 
 import androidx.compose.runtime.Immutable
-import com.rappi.android.models.Keyword
 import com.rappi.android.models.NetworkResponseModel
+import com.rappi.android.models.entities.Tv
 
 @Immutable
-data class KeywordListResponse(
-    val id: Int,
-    val keywords: List<Keyword>
+data class TvResponse(
+    val page: Int,
+    val results: List<Tv>,
+    val total_results: Int,
+    val total_pages: Int
 ) : NetworkResponseModel

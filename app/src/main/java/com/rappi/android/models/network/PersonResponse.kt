@@ -2,13 +2,12 @@ package com.rappi.android.models.network
 
 import androidx.compose.runtime.Immutable
 import com.rappi.android.models.NetworkResponseModel
-import com.rappi.android.models.Review
+import com.rappi.android.models.entities.Person
 
 @Immutable
-class ReviewListResponse(
-    val id: Int,
+data class PersonResponse(
     val page: Int,
-    val results: List<Review>,
-    val total_pages: Int,
-    val total_results: Int
+    val results: List<Person>,
+    val total_results: Int,
+    val total_pages: Int
 ) : NetworkResponseModel

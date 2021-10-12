@@ -1,4 +1,4 @@
-package com.rappi.android.ui.feature.detail.home
+package com.rappi.android.ui.feature.detail.tv
 
 import android.content.Intent
 import android.net.Uri
@@ -39,6 +39,7 @@ import com.rappi.android.R
 import com.rappi.android.models.Cast
 import com.rappi.android.models.Video
 import com.rappi.android.models.entities.Movie
+import com.rappi.android.models.entities.Tv
 import com.rappi.android.network.Api
 import com.rappi.android.network.compose.NetworkImage
 import com.rappi.android.ui.custom.RatingBar
@@ -50,21 +51,21 @@ import me.onebone.toolbar.ScrollStrategy
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 
 @Composable
-fun DetailScreen(
+fun TvDetailScreen(
     movieId: Int?,
-    viewModel: DetailViewModel,
+    viewModel: TvDetailViewModel,
     pressOnBack: () -> Unit
 ) {
-    val movie: Movie? by viewModel.movieFlow.collectAsState(initial = null)
+    val tv: Tv? by viewModel.movieFlow.collectAsState(initial = null)
 
     val stateToolbar = rememberCollapsingToolbarScaffoldState()
     val density = LocalDensity.current.density
     val width = remember { mutableStateOf(0f) }
     val height = remember { mutableStateOf(0f) }
-    val mov = remember { mutableStateOf(Movie()) }
-    movie?.let { mov.value = it }
+    val mov = remember { mutableStateOf(Tv()) }
+    tv?.let { mov.value = it }
     val imageUrl = remember { mutableStateOf("") }
-    movie?.let { imageUrl.value = Api.getPosterPath(it.poster_path) }
+    tv?.let { imageUrl.value = Api.getPosterPath(it.poster_path) }
 
     LaunchedEffect(key1 = movieId) {
         viewModel.fetchMovieDetailsById(movieId ?: 0)
@@ -91,7 +92,7 @@ fun DetailScreen(
                     TopAppBar(
                         title = {
                             Text(
-                                text = mov.value.title ?: "",
+                                text = mov.value.name ?: "",
                                 color = Color.White,
                                 fontFamily = dmSansFamily,
                                 fontWeight = FontWeight.Bold,
@@ -154,7 +155,7 @@ fun DetailScreen(
                         )
                 ) {
                     Text(
-                        text = movie?.title ?: "",
+                        text = mov.value.name ?: "",
                         color = Color.White,
                         style = Typography.h1,
                         modifier = Modifier
@@ -165,7 +166,7 @@ fun DetailScreen(
                     )
 
                     Text(
-                        text = "Release Date: ${movie?.release_date}",
+                        text = "Release Date: ${mov.value.first_air_date}",
                         color = Color.White,
                         style = Typography.body2,
                         modifier = Modifier
@@ -175,7 +176,7 @@ fun DetailScreen(
                     )
 
                     RatingBar(
-                        rating = (movie?.vote_average ?: 0f) / 2f,
+                        rating = (mov.value.vote_average ?: 0f) / 2f,
                         color = Color.White,
                         modifier = Modifier
                             .height(15.dp)
@@ -196,8 +197,8 @@ fun DetailScreen(
 }
 
 @Composable
-fun MovieDetailsText(viewModel: DetailViewModel) {
-    val movie: Movie? by viewModel.movieFlow.collectAsState(initial = null)
+fun MovieDetailsText(viewModel: TvDetailViewModel) {
+    val tv: Tv? by viewModel.movieFlow.collectAsState(initial = null)
 
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -216,7 +217,7 @@ fun MovieDetailsText(viewModel: DetailViewModel) {
         )
 
         Text(
-            text = movie?.overview ?: "",
+            text = tv?.overview ?: "",
             color = colorResource(id = R.color.white),
             modifier = Modifier.padding(8.dp),
             fontFamily = dmSansFamily,
@@ -227,7 +228,7 @@ fun MovieDetailsText(viewModel: DetailViewModel) {
 }
 
 @Composable
-fun MovieDetailsTrailers(viewModel: DetailViewModel) {
+fun MovieDetailsTrailers(viewModel: TvDetailViewModel) {
     val videos: List<Video>? by viewModel.videoListFlow.collectAsState(initial = null)
 
     if(!videos.isNullOrEmpty()) {
@@ -353,7 +354,7 @@ fun VideoThumbnail(video: Video) {
 }
 
 @Composable
-fun MovieDetailsCast(viewModel: DetailViewModel) {
+fun MovieDetailsCast(viewModel: TvDetailViewModel) {
     val casts: List<Cast>? by viewModel.castListFlow.collectAsState(initial = null)
 
     casts?.let {

@@ -1,14 +1,19 @@
 package com.rappi.android.network.compose
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import com.bumptech.glide.load.resource.bitmap.CenterInside
+import com.rappi.android.R
 import com.rappi.android.ui.theme.Typography
 import com.rappi.android.ui.theme.shimmerHighLight
 import com.skydoves.landscapist.CircularReveal
@@ -39,11 +44,11 @@ fun NetworkImage(
             circularReveal = circularReveal,
             bitmapPalette = bitmapPalette,
             failure = {
-                Text(
-                    text = "image request failed.",
-                    textAlign = TextAlign.Center,
-                    style = Typography.body2,
-                    modifier = Modifier.fillMaxSize()
+                Image(
+                    modifier = Modifier.fillMaxSize(),
+                    painter = painterResource(id = R.drawable.ic_broken_image),
+                    contentDescription = null,
+                    contentScale = ContentScale.Inside
                 )
             },
         )
@@ -56,11 +61,11 @@ fun NetworkImage(
             bitmapPalette = bitmapPalette,
             shimmerParams = shimmerParams,
             failure = {
-                Text(
-                    text = "image request failed.",
-                    textAlign = TextAlign.Center,
-                    style = Typography.body2,
-                    modifier = Modifier.fillMaxSize()
+                Image(
+                    modifier = Modifier.fillMaxSize(),
+                    painter = painterResource(id = R.drawable.ic_broken_image),
+                    contentDescription = null,
+                    contentScale = ContentScale.Inside
                 )
             }
         )

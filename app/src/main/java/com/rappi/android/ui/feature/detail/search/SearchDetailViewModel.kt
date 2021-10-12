@@ -1,8 +1,8 @@
-package com.rappi.android.ui.feature.detail.toprated
+package com.rappi.android.ui.feature.detail.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rappi.android.repository.TopRatedRepository
+import com.rappi.android.repository.SearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -12,26 +12,26 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class TopRatedViewModel @Inject constructor(
-    private val topRatedRepository: TopRatedRepository
+class SearchDetailViewModel @Inject constructor(
+    private val searchRepository: SearchRepository
 ): ViewModel() {
 
     private val movieIdSharedFlow: MutableSharedFlow<Int> = MutableSharedFlow(replay = 1)
 
     val movieFlow = movieIdSharedFlow.flatMapLatest {
-        topRatedRepository.loadMovieById(it)
+        searchRepository.loadMovieById(it)
     }
 
     val videoListFlow = movieIdSharedFlow.flatMapLatest {
-        topRatedRepository.loadVideoList(it)
+        searchRepository.loadVideoList(it)
     }.shareIn(viewModelScope, SharingStarted.WhileSubscribed(), replay = 1)
 
     val castListFlow = movieIdSharedFlow.flatMapLatest {
-        topRatedRepository.loadCastList(it)
+        searchRepository.loadCastList(it)
     }.shareIn(viewModelScope, SharingStarted.WhileSubscribed(), replay = 1)
 
     init {
-        Timber.d("Injection TopRatedViewModel")
+        Timber.d("Injection PopularViewModel")
     }
 
     fun fetchMovieDetailsById(id: Int) = movieIdSharedFlow.tryEmit(id)

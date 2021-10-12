@@ -4,7 +4,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -15,6 +14,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.rappi.android.ui.feature.home.HomeScreen
 import com.rappi.android.R
 import com.rappi.android.ui.feature.popular.PopularScreen
@@ -23,9 +23,9 @@ import com.rappi.android.ui.feature.toprated.TopRatedScreen
 @Composable
 fun HomeTabScreen(
     viewModel: MainViewModel,
+    navController: NavController,
     tabStateHolder: HomeTabStateHolder,
     selectItem: (MainScreenHomeTab, Int) -> Unit,
-    currentRoute: String?,
     currentScreen: String?
 ) {
 
@@ -34,7 +34,6 @@ fun HomeTabScreen(
 
     Scaffold(
         bottomBar = {
-
             BottomNavigation(
                 backgroundColor = Color.Transparent,
                 modifier = Modifier
@@ -52,20 +51,7 @@ fun HomeTabScreen(
                         onClick = { viewModel.selectTab(tab) },
                         selectedContentColor = colorResource(id = R.color.white),
                         unselectedContentColor = colorResource(id = R.color.white_50),
-                        alwaysShowLabel = true,
-                        /*selected = currentRoute == tab.title.toString(),
-                        onClick = {
-                            navController.navigate(tab.route) {
-                                navController.graph.startDestinationRoute?.let { route ->
-                                    popUpTo(route) {
-                                        saveState = true
-                                    }
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }*/
-                        //modifier = Modifier.navigationBarsPadding()
+                        alwaysShowLabel = true
                     )
                 }
             }
@@ -74,7 +60,7 @@ fun HomeTabScreen(
 
         Crossfade(selectedTab) { destination ->
             when (destination) {
-                MainScreenHomeTab.HOME -> HomeScreen(
+                MainScreenHomeTab.TV -> HomeScreen(
                     viewModel,
                     selectItem,
                     tabStateHolder.homeLazyListState
@@ -92,6 +78,6 @@ fun HomeTabScreen(
             }
         }
 
-        MainAppBar(currentScreen = currentScreen)
+        MainAppBar(navController = navController, currentScreen = currentScreen)
     }
 }
