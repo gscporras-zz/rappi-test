@@ -5,7 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.lazy.*
+import androidx.compose.runtime.*
+import com.rappi.android.network.Api
+import com.rappi.android.ui.navigation.NavScreen
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 
 inline fun <reified T : Activity> Activity.startActivity() {
     startActivity(Intent(this, T::class.java))
@@ -51,4 +57,51 @@ fun Context.showKeyboard() {
 fun Context.hideKeyboard(view: View) {
     val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
+
+inline fun <T> LazyListScope.paging2(
+    items: List<T>,
+    currentIndexFlow: StateFlow<Int>,
+    threshold: Int = 4,
+    pageSize: Int = Api.PAGING_SIZE,
+    crossinline fetch: () -> Unit,
+    crossinline itemContent: @Composable LazyItemScope.(item: T) -> Unit,
+) {
+    itemsIndexed(items) { index, item ->
+
+        itemContent(item)
+
+        if ((index + threshold + 1) >= pageSize * (currentIndexFlow.value - 1)) {
+            fetch()
+        }
+    }
+}
+
+inline fun <T> LazyGridScope.paging(
+    items: List<T>,
+    currentIndexFlow: StateFlow<Int>,
+    threshold: Int = 4,
+    pageSize: Int = Api.PAGING_SIZE,
+    crossinline fetch: () -> Unit,
+    crossinline itemContent: @Composable LazyItemScope.(item: T) -> Unit,
+) {
+    itemsIndexed(items) { index, item ->
+
+        itemContent(item)
+
+        if ((index + threshold + 1) >= pageSize * (currentIndexFlow.value - 1)) {
+            fetch()
+        }
+    }
+}
+
+fun String.fromRoute() : String {
+    var title = ""
+    when(this) {
+        NavScreen.Home.route -> title = ""
+        NavScreen.TvDetails.route -> title = "TV"
+        NavScreen.PersonDetails.route -> title = "Person"
+    }
+    return title
 }

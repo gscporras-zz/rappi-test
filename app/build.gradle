@@ -4,6 +4,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
 
 def dataProperties = new Properties()
 dataProperties.load(new FileInputStream(rootProject.file("../rappi-keys/data.properties")))
@@ -36,7 +37,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            debuggable true
+        }
         release {
+            debuggable false
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -104,10 +109,21 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions.freeCompilerArgs += ["-Xopt-in=kotlin.time.ExperimentalTime"]
+        kotlinOptions.freeCompilerArgs += ["-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"]
+        kotlinOptions.freeCompilerArgs += ["-Xopt-in=androidx.compose.animation.ExperimentalAnimationApi"]
+        kotlinOptions.freeCompilerArgs += ["-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi"]
+    }
 }
 
 dependencies {
     implementation rootProject.kotlin
+    implementation rootProject.koinCore
+    implementation rootProject.koinViewModel
+    implementation rootProject.koinAndroid
+    implementation rootProject.koinScope
 
     def testingDependencies = rootProject.ext.testingDependencies
     testImplementation testingDependencies.junitTesting
@@ -120,11 +136,35 @@ dependencies {
     implementation appDependencies.core
     implementation appDependencies.appcompat
     implementation appDependencies.material
+    implementation appDependencies.constraintVersion
+
+    //Insets
+    implementation appDependencies.insets
+    implementation appDependencies.insetsFlow
+
+    //Startup
+    implementation appDependencies.startup
+
+    //Timber
+    implementation appDependencies.timber
+
+    //Landscapist
+    implementation appDependencies.landscapist
+
+    //Network
+    implementation appDependencies.sandwichNetwork
+
+    // Image loading
     implementation appDependencies.coil
+
     implementation appDependencies.accompanist
+
+    //Glide
     implementation appDependencies.glide
     implementation appDependencies.glideOkHttp3
     kapt appDependencies.glideCompile
+
+    //Compose
     implementation appDependencies.composeUi
     implementation appDependencies.composeActivity
     implementation appDependencies.composeUiTooling
@@ -136,7 +176,30 @@ dependencies {
     implementation appDependencies.composeRxJava
     implementation appDependencies.composeRuntime
     implementation appDependencies.composeNavigation
+    implementation appDependencies.composePaging
     implementation appDependencies.boneToolbarCompose
+
+    //Lifecycle
+    implementation appDependencies.lifecycleExtensions
+    implementation appDependencies.lifecycleViewModel
+    implementation appDependencies.lifecycleRuntime
+
+    //Hilt
+    implementation appDependencies.dagger
+    kapt appDependencies.daggerCompiler
+    api appDependencies.daggerAndroid
+    api appDependencies.daggerSupport
+    kapt appDependencies.daggerProcessor
+    implementation appDependencies.daggerHilt
+    kapt appDependencies.daggerHiltCompiler
+
+    kapt appDependencies.daggerHiltCompilerK
+    implementation appDependencies.daggerHiltNavigation
+
+    //Room
+    implementation appDependencies.roomRuntime
+    implementation appDependencies.roomKtx
+    kapt appDependencies.roomCompiler
 
     def dataDependencies = rootProject.ext.dataDependencies
     implementation dataDependencies.retrofit

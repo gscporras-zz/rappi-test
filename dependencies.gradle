@@ -1,5 +1,9 @@
 ext {
     kotlin          = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72"
+    koinCore        = "org.koin:koin-core:2.1.5"
+    koinViewModel   = "org.koin:koin-androidx-viewmodel:2.0.1"
+    koinAndroid     = "org.koin:koin-android:2.1.5"
+    koinScope       = "org.koin:koin-androidx-scope:2.1.5"
 
     versionCode     = 1
     versionName     = "0.0.1"
@@ -14,12 +18,28 @@ ext {
             composeUiTooling    : "androidx.compose.ui:ui-tooling:$composeVersion"
     ]
 
+    constraintVersion               = '1.0.0-beta02'
     glideVersion                    = '4.9.0'
+    roomVersion                     = '2.3.0'
+    sandwichVersion                 = '1.2.0'
+    timberVersion                   = '4.7.1'
+    landscapistVersion              = '1.3.7'
+    accompanistVersion              = '0.17.0'
 
     appDependencies = [
             core                : "androidx.core:core-ktx:1.3.0",
             appcompat           : "androidx.appcompat:appcompat:1.1.0",
             material            : "com.google.android.material:material:1.3.0",
+            constraintVersion   : "androidx.constraintlayout:constraintlayout-compose:$constraintVersion",
+
+            insets              : "com.google.accompanist:accompanist-insets:$accompanistVersion",
+            insetsFlow          : "com.google.accompanist:accompanist-flowlayout:$accompanistVersion",
+
+            startup             : 'androidx.startup:startup-runtime:1.1.0',
+
+            timber              : "com.jakewharton.timber:timber:$timberVersion",
+
+            landscapist         : "com.github.skydoves:landscapist-coil:$landscapistVersion",
 
             coil                : "io.coil-kt:coil-compose:1.3.2",
 
@@ -40,8 +60,30 @@ ext {
             composeRxJava       : "androidx.compose.runtime:runtime-rxjava2:$composeVersion",
             composeRuntime      : "androidx.compose.runtime:runtime:$composeVersion",
             composeNavigation   : "androidx.navigation:navigation-compose:2.4.0-alpha09",
+            composePaging       : "androidx.paging:paging-compose:1.0.0-alpha02",
 
-            boneToolbarCompose  : "me.onebone:toolbar-compose:2.2.0"
+            boneToolbarCompose  : "me.onebone:toolbar-compose:2.2.0",
+
+            lifecycleExtensions : "androidx.lifecycle:lifecycle-extensions:2.2.0",
+            lifecycleViewModel  : "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0",
+            lifecycleRuntime    : "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0",
+
+            dagger              : "com.google.dagger:dagger:2.38.1",
+            daggerCompiler      : "com.google.dagger:dagger-compiler:2.38.1",
+            daggerAndroid       : "com.google.dagger:dagger-android:2.37",
+            daggerSupport       : "com.google.dagger:dagger-android-support:2.37",
+            daggerProcessor     : "com.google.dagger:dagger-android-processor:2.37",
+            daggerHilt          : "com.google.dagger:hilt-android:2.38.1",
+            daggerHiltCompiler  : "com.google.dagger:hilt-android-compiler:2.38.1",
+
+            daggerHiltCompilerK : "com.google.dagger:hilt-compiler:2.37",
+            daggerHiltNavigation: "androidx.hilt:hilt-navigation-compose:1.0.0-alpha03",
+
+            roomRuntime         : "androidx.room:room-runtime:$roomVersion",
+            roomKtx             : "androidx.room:room-ktx:$roomVersion",
+            roomCompiler        : "androidx.room:room-compiler:$roomVersion",
+
+            sandwichNetwork     : "com.github.skydoves:sandwich:$sandwichVersion"
     ]
 
     retrofitVersion             = '2.6.0'
