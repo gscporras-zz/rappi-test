@@ -5,9 +5,6 @@ import coil.ImageLoader
 import com.rappi.android.BuildConfig.*
 import com.rappi.android.network.RequestInterceptor
 import com.rappi.android.network.service.MovieService
-import com.rappi.android.network.service.PeopleService
-import com.rappi.android.network.service.TheDiscoverService
-import com.rappi.android.network.service.TvService
 import com.skydoves.sandwich.coroutines.CoroutinesResponseCallAdapterFactory
 import dagger.Module
 import dagger.Provides
@@ -55,25 +52,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideTheDiscoverService(retrofit: Retrofit): TheDiscoverService {
-        return retrofit.create(TheDiscoverService::class.java)
-    }
-
-    @Provides
-    @Singleton
     fun provideMovieService(retrofit: Retrofit): MovieService {
         return retrofit.create(MovieService::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideTvService(retrofit: Retrofit): TvService {
-        return retrofit.create(TvService::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun providePeopleService(retrofit: Retrofit): PeopleService {
-        return retrofit.create(PeopleService::class.java)
     }
 }

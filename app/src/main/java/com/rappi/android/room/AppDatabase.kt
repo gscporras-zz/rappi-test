@@ -5,11 +5,12 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.rappi.android.models.entities.Movie
 import com.rappi.android.models.entities.Person
-import com.rappi.android.models.entities.Tv
+import com.rappi.android.models.entities.Popular
+import com.rappi.android.models.entities.TopRated
 import com.rappi.android.room.converters.*
 
 @Database(
-    entities = [(Movie::class), (Tv::class), (Person::class)],
+    entities = [(Movie::class), (Popular::class), (TopRated::class), (Person::class)],
     version = 3, exportSchema = false
 )
 @TypeConverters(
@@ -24,6 +25,6 @@ import com.rappi.android.room.converters.*
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun movieDao(): MovieDao
-    abstract fun tvDao(): TvDao
-    abstract fun peopleDao(): PeopleDao
+    abstract fun popularDao(): PopularDao
+    abstract fun topRatedDao(): TopRatedDao
 }

@@ -1,164 +1,142 @@
 package com.rappi.android.ui.feature.toprated
-/*
 
-import android.content.Intent
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.rememberCoilPainter
-import com.rappi.android.R
-import com.rappi.android.base.LAUNCH_LISTEN_FOR_EFFECTS
-import com.rappi.android.models.response.MovieItem
-import com.rappi.android.ui.feature.detail.DetailActivity
-import com.rappi.android.ui.theme.Typography
-import com.rappi.android.utils.BASE_IMAGE_URL
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
+import androidx.palette.graphics.Palette
+import com.rappi.android.models.entities.Popular
+import com.rappi.android.models.entities.TopRated
+import com.rappi.android.models.network.NetworkState
+import com.rappi.android.models.network.onLoading
+import com.rappi.android.network.Api
+import com.rappi.android.network.compose.NetworkImage
+import com.rappi.android.ui.feature.home.MoviePoster
+import com.rappi.android.ui.feature.main.MainScreenHomeTab
+import com.rappi.android.ui.feature.main.MainViewModel
+import com.rappi.android.utils.paging
+import com.skydoves.landscapist.palette.BitmapPalette
 
-@ExperimentalFoundationApi
-@InternalCoroutinesApi
 @Composable
 fun TopRatedScreen(
-    state: TopRatedContract.State,
-    effectFlow: Flow<TopRatedContract.Effect>?,
-    onEventSent: (event: TopRatedContract.Event) -> Unit,
-    onNavigationRequested: (navigationEffect: TopRatedContract.Effect.Navigation) -> Unit
+    viewModel: MainViewModel,
+    selectPoster: (MainScreenHomeTab, Int) -> Unit,
+    lazyListState: LazyListState
 ) {
 
-    val scaffoldState: ScaffoldState = rememberScaffoldState()
-    val listState = rememberLazyListState()
+    val networkState: NetworkState by viewModel.topRatedLoadingState
+    val movies by viewModel.topRateds
 
-    // Listen for side effects from the VM
-    LaunchedEffect(LAUNCH_LISTEN_FOR_EFFECTS) {
-        effectFlow?.onEach { effect ->
-            when (effect) {
-                is TopRatedContract.Effect.DataWasLoaded ->
-                    scaffoldState.snackbarHostState.showSnackbar(
-                        message = "Food categories are loaded.",
-                        duration = SnackbarDuration.Short
-                    )
-                is TopRatedContract.Effect.Navigation.MovieDetail -> onNavigationRequested(
-                    effect
-                )
-            }
-        }?.collect()
-    }
-
-    Surface(
-        color = Color.Black,
-        modifier = Modifier.fillMaxSize()
+    LazyColumn(
+        state = lazyListState
     ) {
-        LazyVerticalGrid(state = listState, cells = GridCells.Fixed(2)) {
-            */
-/*stickyHeader {
-                MainHeader()
-            }*//*
 
-            itemsIndexed(state.movies.results) { index, item ->
-                TopRatedItem(movieItem = item, onEventSent = onEventSent)
-            }
-
-            item {
-                Spacer(modifier = Modifier.padding(32.dp))
-            }
-        }
-    }
-}
-
-@Composable
-fun TopRatedItem(
-    movieItem: MovieItem,
-    onEventSent: (event: TopRatedContract.Event) -> Unit,
-) {
-    val context = LocalContext.current
-    TopRatedItem(movieItem = movieItem, modifier = Modifier
-        .background(Color.Black)
-        .padding(8.dp)
-        .clickable {
-            //onEventSent(PopularContract.Event.PopularSelection(movieId = movieItem.id ?: 0))
-            val intent = Intent(context, DetailActivity::class.java)
-            intent.putExtra(DetailActivity.ID, movieItem.id)
-            context.startActivity(intent)
-        })
-}
-
-@Composable
-fun TopRatedItem(movieItem: MovieItem, modifier: Modifier) {
-    val density = LocalDensity.current.density
-    val width = remember { mutableStateOf(0f) }
-    val height = remember { mutableStateOf(0f) }
-    Box(
-        modifier = modifier
-    ) {
-        Card(
-            shape = RoundedCornerShape(3.dp),
-            backgroundColor = Color.Transparent,
-            elevation = 0.dp
+        paging(
+            items = movies,
+            currentIndexFlow = viewModel.topRatedPageStateFlow,
+            fetch = { viewModel.fetchNextTopRatedPage() }
         ) {
-            Box {
-                Image(
-                    painter = rememberCoilPainter(
-                        request = BASE_IMAGE_URL + movieItem.poster_path
-                    ),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .aspectRatio(0.6f)
-                        .onGloballyPositioned {
-                            width.value = it.size.width / density
-                            height.value = it.size.height / density
-                        },
-                    contentScale = ContentScale.Crop,
-                )
-                Column(
-                    Modifier
-                        .size(width.value.dp, height.value.dp)
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(
-                                    Color.Transparent,
-                                    colorResource(id = R.color.black_30),
-                                    colorResource(id = R.color.black)
-                                )
-                            )
-                        )
-                ) {}
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(8.dp)
-                ) {
-                    Text(
-                        text = movieItem.title ?: "",
-                        style = Typography.h2,
-                        color = colorResource(id = R.color.white)
-                    )
-                }
-            }
+
+            MoviePoster(
+                movie = it,
+                selectPoster = selectPoster
+            )
         }
     }
-}*/
+
+    networkState.onLoading {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(20.dp),
+            )
+        }
+    }
+}
+
+@Composable
+fun MoviePoster(
+    movie: TopRated,
+    selectPoster: (MainScreenHomeTab, Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .clickable(
+                onClick = {
+                    selectPoster(MainScreenHomeTab.HOME, movie.id ?: 0)
+                }
+            ),
+        color = MaterialTheme.colors.onBackground
+    ) {
+
+        Box {
+            //val (box, crossfade) = createRefs()
+
+            val density = LocalDensity.current.density
+            val width = remember { mutableStateOf(0f) }
+            val height = remember { mutableStateOf(0f) }
+
+            var palette by remember { mutableStateOf<Palette?>(null) }
+
+            Crossfade(
+                targetState = palette,
+                modifier = Modifier
+                    .size(width.value.dp, height.value.dp)
+            ) {
+
+                Box(
+                    modifier = Modifier
+                        .background(Color(it?.darkVibrantSwatch?.rgb ?: 0))
+                        .alpha(0.7f)
+                        .fillMaxSize()
+                )
+            }
+
+            NetworkImage(
+                networkUrl = Api.getPosterPath(movie.poster_path),
+                modifier = Modifier
+                    .aspectRatio(0.6f)
+                    .onGloballyPositioned {
+                        width.value = it.size.width / density
+                        height.value = it.size.height / density
+                    },
+                bitmapPalette = BitmapPalette {
+                    palette = it
+                },
+                contentScale = ContentScale.Crop
+            )
+
+            Column(
+                modifier = Modifier
+                    .size(width.value.dp, height.value.dp)
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(Color.Black, Color.Transparent, Color.Black)
+                        )
+                    )
+            ){}
+        }
+    }
+}

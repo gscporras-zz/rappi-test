@@ -1,16 +1,12 @@
 package com.rappi.android.di
 
 import com.rappi.android.network.service.MovieService
-import com.rappi.android.network.service.PeopleService
-import com.rappi.android.network.service.TheDiscoverService
-import com.rappi.android.network.service.TvService
-import com.rappi.android.repository.DiscoverRepository
 import com.rappi.android.repository.MovieRepository
-import com.rappi.android.repository.PeopleRepository
-import com.rappi.android.repository.TvRepository
+import com.rappi.android.repository.TopRatedRepository
+import com.rappi.android.repository.PopularRepository
 import com.rappi.android.room.MovieDao
-import com.rappi.android.room.PeopleDao
-import com.rappi.android.room.TvDao
+import com.rappi.android.room.TopRatedDao
+import com.rappi.android.room.PopularDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,16 +19,6 @@ object RepositoryModule {
 
     @Provides
     @ViewModelScoped
-    fun provideDiscoverRepository(
-        discoverService: TheDiscoverService,
-        movieDao: MovieDao,
-        tvDao: TvDao
-    ): DiscoverRepository {
-        return DiscoverRepository(discoverService, movieDao, tvDao)
-    }
-
-    @Provides
-    @ViewModelScoped
     fun provideMovieRepository(
         movieService: MovieService,
         movieDao: MovieDao
@@ -42,19 +28,19 @@ object RepositoryModule {
 
     @Provides
     @ViewModelScoped
-    fun providePeopleRepository(
-        peopleService: PeopleService,
-        peopleDao: PeopleDao
-    ): PeopleRepository {
-        return PeopleRepository(peopleService, peopleDao)
+    fun providePopularRepository(
+        movieService: MovieService,
+        popularDao: PopularDao
+    ): PopularRepository {
+        return PopularRepository(movieService, popularDao)
     }
 
     @Provides
     @ViewModelScoped
-    fun provideTvRepository(
-        tvService: TvService,
-        tvDao: TvDao
-    ): TvRepository {
-        return TvRepository(tvService, tvDao)
+    fun provideTopRatedRepository(
+        movieService: MovieService,
+        topRatedDao: TopRatedDao
+    ): TopRatedRepository {
+        return TopRatedRepository(movieService, topRatedDao)
     }
 }

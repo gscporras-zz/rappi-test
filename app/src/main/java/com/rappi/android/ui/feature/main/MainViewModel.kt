@@ -7,30 +7,31 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.ImageLoader
 import com.rappi.android.models.entities.Movie
-import com.rappi.android.models.entities.Person
-import com.rappi.android.models.entities.Tv
+import com.rappi.android.models.entities.Popular
+import com.rappi.android.models.entities.TopRated
 import com.rappi.android.models.network.NetworkState
-import com.rappi.android.repository.DiscoverRepository
-import com.rappi.android.repository.PeopleRepository
+import com.rappi.android.repository.MovieRepository
+import com.rappi.android.repository.PopularRepository
+import com.rappi.android.repository.TopRatedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@ExperimentalCoroutinesApi
 @HiltViewModel
 class MainViewModel @Inject constructor(
     val imageLoader: ImageLoader,
-    private val discoverRepository: DiscoverRepository,
-    private val peopleRepository: PeopleRepository
+    private val movieRepository: MovieRepository,
+    private val popularRepository: PopularRepository,
+    private val topRatedRepository: TopRatedRepository
 ): ViewModel() {
 
     private val _selectedTab: MutableState<MainScreenHomeTab> =
         mutableStateOf(MainScreenHomeTab.HOME)
     val selectedTab: State<MainScreenHomeTab> get() = _selectedTab
 
+    //Discover
     private val _movieLoadingState: MutableState<NetworkState> = mutableStateOf(NetworkState.IDLE)
     val movieLoadingState: State<NetworkState> get() = _movieLoadingState
 
@@ -38,38 +39,40 @@ class MainViewModel @Inject constructor(
     val moviePageStateFlow: MutableStateFlow<Int> = MutableStateFlow(1)
     private val newMovieFlow = moviePageStateFlow.flatMapLatest {
         _movieLoadingState.value = NetworkState.LOADING
-        discoverRepository.loadMovies(
+        movieRepository.loadMovies(
             page = it,
             success = { _movieLoadingState.value = NetworkState.SUCCESS },
             error = { _movieLoadingState.value = NetworkState.ERROR }
         )
     }.shareIn(viewModelScope, SharingStarted.WhileSubscribed(), replay = 1)
 
-    private val _tvLoadingState: MutableState<NetworkState> = mutableStateOf(NetworkState.IDLE)
-    val tvLoadingState: State<NetworkState> get() = _tvLoadingState
+    //Popular
+    private val _popularLoadingState: MutableState<NetworkState> = mutableStateOf(NetworkState.IDLE)
+    val popularLoadingState: State<NetworkState> get() = _popularLoadingState
 
-    val tvs: State<MutableList<Tv>> = mutableStateOf(mutableListOf())
-    val tvPageStateFlow: MutableStateFlow<Int> = MutableStateFlow(1)
-    private val newTvFlow = tvPageStateFlow.flatMapLatest {
-        _tvLoadingState.value = NetworkState.LOADING
-        discoverRepository.loadTvs(
+    val populars: State<MutableList<Popular>> = mutableStateOf(mutableListOf())
+    val popularPageStateFlow: MutableStateFlow<Int> = MutableStateFlow(1)
+    private val newPopularFlow = popularPageStateFlow.flatMapLatest {
+        _popularLoadingState.value = NetworkState.LOADING
+        popularRepository.loadPopular(
             page = it,
-            success = { _tvLoadingState.value = NetworkState.SUCCESS },
-            error = { _tvLoadingState.value = NetworkState.ERROR }
+            success = { _popularLoadingState.value = NetworkState.SUCCESS },
+            error = { _popularLoadingState.value = NetworkState.ERROR }
         )
     }.shareIn(viewModelScope, SharingStarted.WhileSubscribed(), replay = 1)
 
-    private val _personLoadingState: MutableState<NetworkState> = mutableStateOf(NetworkState.IDLE)
-    val personLoadingState: State<NetworkState> get() = _personLoadingState
+    //Top Rated
+    private val _topRatedLoadingState: MutableState<NetworkState> = mutableStateOf(NetworkState.IDLE)
+    val topRatedLoadingState: State<NetworkState> get() = _topRatedLoadingState
 
-    val people: State<MutableList<Person>> = mutableStateOf(mutableListOf())
-    val peoplePageStateFlow: MutableStateFlow<Int> = MutableStateFlow(1)
-    private val newPeople = peoplePageStateFlow.flatMapLatest {
-        _personLoadingState.value = NetworkState.LOADING
-        peopleRepository.loadPeople(
+    val topRateds: State<MutableList<TopRated>> = mutableStateOf(mutableListOf())
+    val topRatedPageStateFlow: MutableStateFlow<Int> = MutableStateFlow(1)
+    private val newTopRated = topRatedPageStateFlow.flatMapLatest {
+        _topRatedLoadingState.value = NetworkState.LOADING
+        topRatedRepository.loadTopRated(
             page = it,
-            success = { _personLoadingState.value = NetworkState.SUCCESS },
-            error = { _personLoadingState.value = NetworkState.ERROR }
+            success = { _topRatedLoadingState.value = NetworkState.SUCCESS },
+            error = { _topRatedLoadingState.value = NetworkState.ERROR }
         )
     }.shareIn(viewModelScope, SharingStarted.WhileSubscribed(), replay = 1)
 
@@ -81,14 +84,14 @@ class MainViewModel @Inject constructor(
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            newTvFlow.collectLatest {
-                tvs.value.addAll(it)
+            newPopularFlow.collectLatest {
+                populars.value.addAll(it)
             }
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            newPeople.collectLatest {
-                people.value.addAll(it)
+            newTopRated.collectLatest {
+                topRateds.value.addAll(it)
             }
         }
     }
@@ -103,15 +106,15 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun fetchNextTvPage() {
-        if (tvLoadingState.value != NetworkState.LOADING) {
-            tvPageStateFlow.value++
+    fun fetchNextPopularPage() {
+        if (popularLoadingState.value != NetworkState.LOADING) {
+            popularPageStateFlow.value++
         }
     }
 
-    fun fetchNextPeoplePage() {
-        if (personLoadingState.value != NetworkState.LOADING) {
-            peoplePageStateFlow.value++
+    fun fetchNextTopRatedPage() {
+        if (topRatedLoadingState.value != NetworkState.LOADING) {
+            topRatedPageStateFlow.value++
         }
     }
 }

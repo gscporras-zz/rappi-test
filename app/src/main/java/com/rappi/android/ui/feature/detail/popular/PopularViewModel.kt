@@ -1,8 +1,8 @@
-package com.rappi.android.ui.feature.detail
+package com.rappi.android.ui.feature.detail.popular
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rappi.android.repository.MovieRepository
+import com.rappi.android.repository.PopularRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -12,30 +12,30 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailViewModel @Inject constructor(
-    private val movieRepository: MovieRepository
-    ): ViewModel() {
+class PopularViewModel @Inject constructor(
+    private val popularRepository: PopularRepository
+): ViewModel() {
 
     private val movieIdSharedFlow: MutableSharedFlow<Int> = MutableSharedFlow(replay = 1)
 
     val movieFlow = movieIdSharedFlow.flatMapLatest {
-        movieRepository.loadMovieById(it)
+        popularRepository.loadMovieById(it)
     }
 
     val videoListFlow = movieIdSharedFlow.flatMapLatest {
-        movieRepository.loadVideoList(it)
+        popularRepository.loadVideoList(it)
     }.shareIn(viewModelScope, SharingStarted.WhileSubscribed(), replay = 1)
 
     val castListFlow = movieIdSharedFlow.flatMapLatest {
-        movieRepository.loadCastList(it)
+        popularRepository.loadCastList(it)
     }.shareIn(viewModelScope, SharingStarted.WhileSubscribed(), replay = 1)
 
     val keywordListFlow = movieIdSharedFlow.flatMapLatest {
-        movieRepository.loadKeywordList(it)
+        popularRepository.loadKeywordList(it)
     }
 
     val reviewListFlow = movieIdSharedFlow.flatMapLatest {
-        movieRepository.loadReviewsList(it)
+        popularRepository.loadReviewsList(it)
     }
 
     init {

@@ -26,7 +26,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.rappi.android.R
-import com.rappi.android.ui.feature.detail.DetailScreen
+import com.rappi.android.ui.feature.detail.home.DetailScreen
+import com.rappi.android.ui.feature.detail.popular.PopularDetailScreen
 import com.rappi.android.ui.navigation.NavScreen
 import com.rappi.android.ui.theme.dmSansFamily
 
@@ -47,8 +48,8 @@ fun MainScreen(currentRoute: String?, currentScreen: String?) {
                 selectItem = { tab, index ->
                     when(tab) {
                         MainScreenHomeTab.HOME -> navController.navigate("${NavScreen.MovieDetails.route}/$index")
-                        MainScreenHomeTab.TV -> navController.navigate("${NavScreen.MovieDetails.route}/$index")
-                        MainScreenHomeTab.PERSON -> navController.navigate("${NavScreen.MovieDetails.route}/$index")
+                        MainScreenHomeTab.POPULAR -> navController.navigate("${NavScreen.PopularDetails.route}/$index")
+                        MainScreenHomeTab.TOP_RATED -> navController.navigate("${NavScreen.TopRatedDetails.route}/$index")
                     }
                 },
                 currentRoute = currentRoute,
@@ -66,28 +67,26 @@ fun MainScreen(currentRoute: String?, currentScreen: String?) {
         }
 
         composable(
-            route = NavScreen.TvDetails.routeWithArgument,
+            route = NavScreen.PopularDetails.routeWithArgument,
             arguments = listOf(
-                navArgument(NavScreen.TvDetails.argument0) { type = NavType.LongType }
+                navArgument(NavScreen.PopularDetails.argument0) { type = NavType.IntType }
             )
         ) { backStackEntry ->
 
-            val posterId = backStackEntry.arguments?.getLong(NavScreen.TvDetails.argument0)
-                ?: return@composable
+            val movieId = backStackEntry.arguments?.getInt(NavScreen.PopularDetails.argument0) ?: return@composable
 
-            /*TvDetailScreen(posterId, hiltViewModel()) {
+            PopularDetailScreen(movieId, hiltViewModel()) {
                 navController.navigateUp()
-            }*/
+            }
         }
         composable(
-            route = NavScreen.PersonDetails.routeWithArgument,
+            route = NavScreen.TopRatedDetails.routeWithArgument,
             arguments = listOf(
-                navArgument(NavScreen.PersonDetails.argument0) { type = NavType.LongType }
+                navArgument(NavScreen.TopRatedDetails.argument0) { type = NavType.IntType }
             )
         ) { backStackEntry ->
 
-            val personId = backStackEntry.arguments?.getLong(NavScreen.PersonDetails.argument0)
-                    ?: return@composable
+            val movieId = backStackEntry.arguments?.getInt(NavScreen.TopRatedDetails.argument0) ?: return@composable
 
             /*PersonDetailScreen(personId, hiltViewModel()) {
                 navController.navigateUp()
@@ -122,6 +121,6 @@ enum class MainScreenHomeTab(
     val icon: Int
 ) {
     HOME(R.string.menu_home, R.drawable.ic_home),
-    TV(R.string.menu_tv, R.drawable.ic_popular),
-    PERSON(R.string.menu_person, R.drawable.ic_top_rated);
+    POPULAR(R.string.menu_popular, R.drawable.ic_popular),
+    TOP_RATED(R.string.menu_top_rated, R.drawable.ic_top_rated);
 }

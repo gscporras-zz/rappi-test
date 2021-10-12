@@ -8,5 +8,5 @@ import com.rappi.android.models.Video
 @Immutable
 data class CastListResponse(
     val id: Int,
-    val results: List<Cast>
+    val cast: List<Cast>
 ): NetworkResponseModel

@@ -1,8 +1,7 @@
-package com.rappi.android.ui.feature.detail
+package com.rappi.android.ui.feature.detail.home
 
 import android.content.Intent
 import android.net.Uri
-import android.widget.RatingBar
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -21,14 +20,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -58,52 +55,6 @@ fun DetailScreen(
     viewModel: DetailViewModel,
     pressOnBack: () -> Unit
 ) {
-    /*val scrollState = rememberScrollState()
-    val density = LocalDensity.current.density
-    val width = remember { mutableStateOf(0f) }
-    val height = remember { mutableStateOf(0f) }
-
-    val score = remember { mutableStateOf(0) }
-    score.value = state.movie.vote_average?.toInt() ?: 0
-
-    val listState = rememberLazyListState()
-
-    val genres = remember { mutableStateOf("") }
-    genres.value = state.movie.genres?.first()?.name ?: ""
-
-    val imageOffset = (-scrollState.value * 0.18f)
-
-    val imageUrl = remember { mutableStateOf("") }
-    imageUrl.value = BASE_IMAGE_URL+state.movie.poster_path
-
-    val starts = listOf(
-        Icons.Default.Star,
-        Icons.Default.Star,
-        Icons.Default.Star,
-        Icons.Default.Star,
-        Icons.Default.Star
-    )
-
-    val stateToolbar = rememberCollapsingToolbarScaffoldState()
-
-    val scaffoldState: ScaffoldState = rememberScaffoldState()
-
-    // Listen for side effects from the VM
-    LaunchedEffect(LAUNCH_LISTEN_FOR_EFFECTS) {
-        effectFlow?.onEach { effect ->
-            when (effect) {
-                is DetailContract.Effect.DataWasLoaded ->
-                    scaffoldState.snackbarHostState.showSnackbar(
-                        message = "Food categories are loaded.",
-                        duration = SnackbarDuration.Short
-                    )
-                is DetailContract.Effect.Navigation.ToCategoryDetails -> onNavigationRequested(
-                    effect
-                )
-            }
-        }?.collect()
-    }*/
-
     val movie: Movie? by viewModel.movieFlow.collectAsState(initial = null)
 
     val stateToolbar = rememberCollapsingToolbarScaffoldState()
@@ -279,11 +230,10 @@ fun MovieDetailsText(viewModel: DetailViewModel) {
 fun MovieDetailsTrailers(viewModel: DetailViewModel) {
     val videos: List<Video>? by viewModel.videoListFlow.collectAsState(initial = null)
 
-    Column(Modifier.padding(top = 16.dp)) {
-        val listState = rememberLazyListState()
+    videos?.let {
+        Column(Modifier.padding(top = 16.dp)) {
+            val listState = rememberLazyListState()
 
-        val videosFiltered = videos?.filter { it.type == "Trailer" && it.site == "YouTube" }
-        if(!videosFiltered.isNullOrEmpty()) {
             Text(
                 text = "Trailers",
                 color = Color.White,
@@ -294,7 +244,7 @@ fun MovieDetailsTrailers(viewModel: DetailViewModel) {
                 state = listState,
                 modifier = Modifier.padding(top = 8.dp)
             ) {
-                items(videosFiltered) { video ->
+                items(it) { video ->
                     VideoThumbnail(video)
                 }
             }
@@ -413,9 +363,12 @@ fun MovieDetailsCast(viewModel: DetailViewModel) {
                 text = "Cast",
                 color = colorResource(id = R.color.white),
                 style = Typography.h2,
-                modifier = Modifier.padding(start = 16.dp)
+                modifier = Modifier.padding(8.dp)
             )
-            LazyRow(state = listState, modifier = Modifier.padding(top = 8.dp)) {
+            LazyRow(
+                state = listState,
+                modifier = Modifier.padding(top = 8.dp)
+            ) {
                 items(it) { cast ->
                     if(cast.known_for_department == "Acting") {
                         Actor(cast)
@@ -429,32 +382,39 @@ fun MovieDetailsCast(viewModel: DetailViewModel) {
 @Composable
 fun Actor(cast: Cast) {
     Column(modifier = Modifier
-        .width(140.dp)
-        .padding(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        .width(120.dp)
+        .padding(8.dp)
     ) {
-        Image(
+        NetworkImage(
             modifier = Modifier
-                .size(80.dp)
+                .aspectRatio(1f)
                 .clip(CircleShape),
-            painter = rememberCoilPainter(request = Api.getPosterPath(cast.profile_path), fadeIn = true),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            alignment = Alignment.Center
+            networkUrl = Api.getPosterPath(cast.profile_path),
+            contentScale = ContentScale.Crop
         )
         Text(
-            modifier = Modifier.padding(top = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
             text = cast.name,
             style = Typography.body1,
             fontSize = 12.sp,
-            color = Color.White
+            color = Color.White,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center
         )
         Text(
-            modifier = Modifier.padding(top = 4.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp),
             text = cast.character,
             style = Typography.body1,
             fontSize = 10.sp,
-            color = colorResource(id = R.color.white_50)
+            color = colorResource(id = R.color.white_50),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center
         )
     }
 }

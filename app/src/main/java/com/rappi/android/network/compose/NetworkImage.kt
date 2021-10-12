@@ -16,12 +16,6 @@ import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
 import com.skydoves.landscapist.palette.BitmapPalette
 
-/**
- * A wrapper around [CoilImage] setting a default [contentScale] and showing
- * an indicator when loading poster images.
- *
- * @see CoilImage https://github.com/skydoves/landscapist#coil
- */
 @Preview
 @Composable
 fun NetworkImage(

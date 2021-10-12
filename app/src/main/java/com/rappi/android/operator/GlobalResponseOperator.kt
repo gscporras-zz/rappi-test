@@ -16,11 +16,8 @@ class GlobalResponseOperator<T> constructor(
     private val context: Context
 ) : ApiResponseSuspendOperator<T>() {
 
-    // handle the case when the API request gets a success response.
     override suspend fun onSuccess(apiResponse: ApiResponse.Success<T>) = Unit
 
-    // handles the case when the API request gets an error response.
-    // e.g., internal server error.
     override suspend fun onError(apiResponse: ApiResponse.Failure.Error<T>) =
         withContext(Dispatchers.IO) {
             apiResponse.run {
@@ -35,17 +32,12 @@ class GlobalResponseOperator<T> constructor(
                     }
                 }
 
-                /** maps the [ApiResponse.Failure.Error] to the [MovieErrorResponse] using the mapper. */
-
-                /** maps the [ApiResponse.Failure.Error] to the [MovieErrorResponse] using the mapper. */
                 map(ErrorResponseMapper) {
                     Timber.d(message())
                 }
             }
         }
 
-    // handle the case when the API request gets a exception response.
-    // e.g., network connection error.
     override suspend fun onException(apiResponse: ApiResponse.Failure.Exception<T>) =
         apiResponse.run {
             Timber.d(message())

@@ -15,17 +15,17 @@ sealed class NavScreen(val route: String) {
         const val argument0: String = "movieId"
     }
 
-    object TvDetails : NavScreen("TvDetails") {
+    object PopularDetails : NavScreen("PopularDetails") {
 
-        const val routeWithArgument: String = "TvDetails/{tvId}"
+        const val routeWithArgument: String = "PopularDetails/{movieId}"
 
-        const val argument0: String = "tvId"
+        const val argument0: String = "movieId"
     }
 
-    object PersonDetails : NavScreen("PersonDetails") {
+    object TopRatedDetails : NavScreen("TopRatedDetails") {
 
-        const val routeWithArgument: String = "PersonDetails/{personId}"
+        const val routeWithArgument: String = "TopRatedDetails/{movieId}"
 
-        const val argument0: String = "personId"
+        const val argument0: String = "movieId"
     }
 }

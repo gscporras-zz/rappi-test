@@ -4,6 +4,6 @@ import androidx.compose.foundation.lazy.LazyListState
 
 data class HomeTabStateHolder(
     val homeLazyListState: LazyListState,
-    val tvLazyListState: LazyListState,
-    val peopleLazyListState: LazyListState,
+    val popularLazyListState: LazyListState,
+    val topRatedLazyListState: LazyListState,
 )

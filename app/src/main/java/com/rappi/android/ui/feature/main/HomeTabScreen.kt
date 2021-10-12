@@ -17,6 +17,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rappi.android.ui.feature.home.HomeScreen
 import com.rappi.android.R
+import com.rappi.android.ui.feature.popular.PopularScreen
+import com.rappi.android.ui.feature.toprated.TopRatedScreen
 
 @Composable
 fun HomeTabScreen(
@@ -77,21 +79,18 @@ fun HomeTabScreen(
                 MainScreenHomeTab.HOME -> HomeScreen(
                     viewModel,
                     selectItem,
-                    tabStateHolder.homeLazyListState,
-                    modifier,
+                    tabStateHolder.homeLazyListState
                 )
-                /*MainScreenHomeTab.TV -> TvScreen(
+                MainScreenHomeTab.POPULAR -> PopularScreen(
                     viewModel,
                     selectItem,
-                    tabStateHolder.tvLazyListState,
-                    modifier,
+                    tabStateHolder.popularLazyListState
                 )
-                MainScreenHomeTab.PERSON -> PeopleScreen(
+                MainScreenHomeTab.TOP_RATED -> TopRatedScreen(
                     viewModel,
                     selectItem,
-                    tabStateHolder.peopleLazyListState,
-                    modifier,
-                )*/
+                    tabStateHolder.topRatedLazyListState
+                )
             }
         }
 

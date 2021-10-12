@@ -60,7 +60,7 @@ fun Context.hideKeyboard(view: View) {
 }
 
 
-inline fun <T> LazyListScope.paging2(
+inline fun <T> LazyListScope.paging(
     items: List<T>,
     currentIndexFlow: StateFlow<Int>,
     threshold: Int = 4,
@@ -78,7 +78,7 @@ inline fun <T> LazyListScope.paging2(
     }
 }
 
-inline fun <T> LazyGridScope.paging(
+inline fun <T> LazyGridScope.pagingGrid(
     items: List<T>,
     currentIndexFlow: StateFlow<Int>,
     threshold: Int = 4,
@@ -100,8 +100,8 @@ fun String.fromRoute() : String {
     var title = ""
     when(this) {
         NavScreen.Home.route -> title = ""
-        NavScreen.TvDetails.route -> title = "TV"
-        NavScreen.PersonDetails.route -> title = "Person"
+        NavScreen.PopularDetails.route -> title = "Popular"
+        NavScreen.TopRatedDetails.route -> title = "TopRated"
     }
     return title
 }

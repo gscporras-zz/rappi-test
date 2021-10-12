@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import com.rappi.android.room.AppDatabase
 import com.rappi.android.room.MovieDao
-import com.rappi.android.room.PeopleDao
-import com.rappi.android.room.TvDao
+import com.rappi.android.room.TopRatedDao
+import com.rappi.android.room.PopularDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,13 +34,13 @@ object PersistenceModule {
 
     @Provides
     @Singleton
-    fun provideTvDao(appDatabase: AppDatabase): TvDao {
-        return appDatabase.tvDao()
+    fun providePopularDao(appDatabase: AppDatabase): PopularDao {
+        return appDatabase.popularDao()
     }
 
     @Provides
     @Singleton
-    fun providePeopleDao(appDatabase: AppDatabase): PeopleDao {
-        return appDatabase.peopleDao()
+    fun provideTopRatedDao(appDatabase: AppDatabase): TopRatedDao {
+        return appDatabase.topRatedDao()
     }
 }

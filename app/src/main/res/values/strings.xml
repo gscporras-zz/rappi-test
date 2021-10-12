@@ -1,5 +1,5 @@
 <resources>
     <string name="menu_home">Home</string>
-    <string name="menu_tv">Tv</string>
-    <string name="menu_person">Person</string>
+    <string name="menu_popular">Popular</string>
+    <string name="menu_top_rated">TopRated</string>
 </resources>
