@@ -70,9 +70,7 @@ fun HomeTabScreen(
                 }
             }
         }
-    ) { innerPadding ->
-        val modifier = Modifier
-            //.padding(innerPadding)
+    ) {
 
         Crossfade(selectedTab) { destination ->
             when (destination) {

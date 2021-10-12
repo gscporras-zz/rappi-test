@@ -2,6 +2,8 @@ package com.rappi.android.repository
 
 import androidx.annotation.WorkerThread
 import com.rappi.android.models.Cast
+import com.rappi.android.models.Keyword
+import com.rappi.android.models.Review
 import com.rappi.android.models.Video
 import com.rappi.android.network.service.MovieService
 import com.rappi.android.room.TopRatedDao
@@ -20,7 +22,7 @@ class TopRatedRepository constructor(
 ) : Repository {
 
     init {
-        Timber.d("Injection PeopleRepository")
+        Timber.d("Injection TopRatedRepository")
     }
 
     @WorkerThread
@@ -75,26 +77,43 @@ class TopRatedRepository constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    /*@WorkerThread
-    fun loadPersonDetail(id: Long, success: () -> Unit) = flow {
-        val person = peopleDao.getPerson(id)
-        var personDetail = person.personDetail
-        if (personDetail == null) {
-            val response = peopleService.fetchPersonDetail(id)
+    @WorkerThread
+    fun loadKeywordList(id: Int) = flow<List<Keyword>> {
+        val movie = topRatedDao.getMovie(id)
+        var keywords = movie.keywords
+        if (keywords.isNullOrEmpty()) {
+            val response = movieService.fetchKeywords(id)
             response.suspendOnSuccess {
-                personDetail = data
-                person.personDetail = personDetail
-                peopleDao.updatePerson(person)
-                emit(personDetail)
+                keywords = data.keywords
+                movie.keywords = keywords
+                emit(keywords ?: listOf())
+                topRatedDao.updateMovie(movie)
             }
         } else {
-            emit(personDetail)
+            emit(keywords ?: listOf())
         }
-    }.onCompletion { success() }.flowOn(Dispatchers.IO)
+    }.flowOn(Dispatchers.IO)
 
     @WorkerThread
-    fun loadPersonById(id: Long) = flow {
-        val person = peopleDao.getPerson(id)
-        emit(person)
-    }.flowOn(Dispatchers.IO)*/
+    fun loadReviewsList(id: Int) = flow<List<Review>> {
+        val movie = topRatedDao.getMovie(id)
+        var reviews = movie.reviews
+        if (reviews.isNullOrEmpty()) {
+            movieService.fetchReviews(id)
+                .suspendOnSuccess {
+                    reviews = data.results
+                    movie.reviews = reviews
+                    topRatedDao.updateMovie(movie)
+                    emit(reviews ?: listOf())
+                }
+        } else {
+            emit(reviews ?: listOf())
+        }
+    }.flowOn(Dispatchers.IO)
+
+    @WorkerThread
+    fun loadMovieById(id: Int) = flow {
+        val movie = topRatedDao.getMovie(id)
+        emit(movie)
+    }.flowOn(Dispatchers.IO)
 }

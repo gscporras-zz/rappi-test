@@ -1,6 +1,5 @@
 package com.rappi.android.network.service
 
-import com.rappi.android.models.entities.Movie
 import com.rappi.android.models.network.*
 import com.skydoves.sandwich.ApiResponse
 import retrofit2.http.GET
@@ -17,9 +16,6 @@ interface MovieService {
 
     @GET("movie/top_rated?language=en")
     suspend fun fetchTopRatedPeople(@Query("page") page: Int): ApiResponse<TopRatedResponse>
-
-    @GET("movie/{movie_id}?language=en")
-    suspend fun fetchMovieDetail(@Path("movie_id") id: Int): ApiResponse<Movie>
 
     @GET("movie/{movie_id}/videos")
     suspend fun fetchVideos(@Path("movie_id") id: Int): ApiResponse<VideoListResponse>

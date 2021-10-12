@@ -85,7 +85,7 @@ fun MoviePoster(
             .wrapContentHeight()
             .clickable(
                 onClick = {
-                    selectPoster(MainScreenHomeTab.HOME, movie.id ?: 0)
+                    selectPoster(MainScreenHomeTab.TOP_RATED, movie.id ?: 0)
                 }
             ),
         color = MaterialTheme.colors.onBackground

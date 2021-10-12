@@ -28,6 +28,7 @@ import androidx.navigation.navArgument
 import com.rappi.android.R
 import com.rappi.android.ui.feature.detail.home.DetailScreen
 import com.rappi.android.ui.feature.detail.popular.PopularDetailScreen
+import com.rappi.android.ui.feature.detail.toprated.TopRatedDetailScreen
 import com.rappi.android.ui.navigation.NavScreen
 import com.rappi.android.ui.theme.dmSansFamily
 
@@ -88,9 +89,9 @@ fun MainScreen(currentRoute: String?, currentScreen: String?) {
 
             val movieId = backStackEntry.arguments?.getInt(NavScreen.TopRatedDetails.argument0) ?: return@composable
 
-            /*PersonDetailScreen(personId, hiltViewModel()) {
+            TopRatedDetailScreen(movieId, hiltViewModel()) {
                 navController.navigateUp()
-            }*/
+            }
         }
     }
 }
