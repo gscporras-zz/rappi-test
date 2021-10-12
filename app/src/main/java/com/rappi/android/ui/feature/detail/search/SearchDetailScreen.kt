@@ -201,7 +201,7 @@ fun SearchDetailScreen(
                         )
 
                         Text(
-                            text = "Release Date: ${movie?.release_date}",
+                            text = if(mov.value.media_type == "tv") "First Air Date: ${movie?.first_air_date}" else "Release Date: ${movie?.release_date}",
                             color = Color.White,
                             style = Typography.body2,
                             modifier = Modifier

@@ -92,7 +92,6 @@ fun MainScreen(currentScreen: String?) {
                 navController.navigateUp()
             }
         }
-
         composable(
             route = NavScreen.PopularDetails.routeWithArgument,
             arguments = listOf(navArgument(NavScreen.PopularDetails.argument0) { type = NavType.IntType })

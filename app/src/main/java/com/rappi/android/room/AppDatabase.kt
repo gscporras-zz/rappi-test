@@ -7,7 +7,7 @@ import com.rappi.android.models.entities.*
 import com.rappi.android.room.converters.*
 
 @Database(
-    entities = [(Tv::class), (Movie::class), (Popular::class), (TopRated::class), (Search::class), (Person::class)],
+    entities = [(Tv::class), (Movie::class), (Popular::class), (TopRated::class), (Search::class)],
     version = 3, exportSchema = false
 )
 @TypeConverters(
